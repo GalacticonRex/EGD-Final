@@ -1,0 +1,14 @@
+Characters:
+	[Nature] [Demeanor], internal vs external
+	DnD [Alignment]
+	Orthogonal traits such as militarism and empathy
+	
+Database of assets:	
+	associate assets to traits
+	
+Generation Pipeline:
+	Generate Initial Actors
+	Generate Timeline
+	Generate Events
+	Generate Final Actors
+	Associate Final Actors with Game Assets
