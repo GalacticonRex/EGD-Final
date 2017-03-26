@@ -92,7 +92,14 @@ public class TechComponent : MonoBehaviour {
     private Renderer _renderer;
     private Collider _collider;
 
-    // Use this for initialization
+    public TechPiece Tech
+    {
+        get
+        {
+            return _root;
+        }
+    }
+
     private void Start () {
         _player = FindObjectOfType<PlayerMove>();
         _renderer = GetComponent<Renderer>();
@@ -102,23 +109,5 @@ public class TechComponent : MonoBehaviour {
             Destroy(this);
 
         _root = new TechPiece(Name, Weight, Top, Bottom, Left, Right);
-    }
-
-    // Update is called once per frame
-    private void Update () {
-        if (Vector3.Distance(transform.position, _player.transform.position) < _player.HarvestDistance)
-        {
-            RaycastHit hit;
-            Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool selected = (Physics.Raycast(r, out hit, _player.ScanDistance) && hit.collider == _collider);
-            if (selected)
-            {
-                _player.Select(this);
-                if (Input.GetMouseButtonDown(0) && _player.AttemptStoreTech(_root) )
-                {
-                    gameObject.SetActive(false);
-                }
-            }
-        }
     }
 }

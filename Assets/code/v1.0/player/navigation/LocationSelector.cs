@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LocationSelector : MonoBehaviour {
-
-    public PlayerMove Source;
     public Transform Line;
 
     private Plane _base;
-    private PlayerMove _controller;
+    private Player _controller;
     private List<Renderer> _renderers;
 
     public void SetVisibility(bool x)
@@ -45,7 +43,7 @@ public class LocationSelector : MonoBehaviour {
 	// Use this for initialization
 	private void Start () {
         _base = new Plane(Vector3.up, 0.0f);
-        _controller = FindObjectOfType<PlayerMove>();
+        _controller = FindObjectOfType<Player>();
 
         Renderer[] r = GetComponentsInChildren<Renderer>();
 
@@ -56,8 +54,8 @@ public class LocationSelector : MonoBehaviour {
     }
     private void Update()
     {
-        Vector3 source = Source.transform.position;
-        float ratio = _controller.GetArmRatio();
+        Vector3 source = _controller.transform.position;
+        float ratio = _controller.cameraSystem.ratio;
 
         Vector3 dif = transform.position - source;
         if (dif.magnitude == 0)
@@ -68,7 +66,7 @@ public class LocationSelector : MonoBehaviour {
         {
             Line.position = (transform.position + source) / 2.0f;
             Line.rotation = Quaternion.LookRotation(dif);
-            Line.localScale = new Vector3(ratio * 30.0f, ratio * 30.0f, Mathf.Max(10.0f, dif.magnitude));
+            Line.localScale = new Vector3(ratio * 30.0f, ratio * 30.0f, Mathf.Max(10.0f, dif.magnitude - 100.0f));
         }
     }
 }

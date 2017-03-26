@@ -43,25 +43,14 @@ public class CapacityBar : MonoBehaviour {
         }
     }
 
-    private void update_capacity_bars()
-    {
-        CurrentCapacity.text = Mathf.RoundToInt(currentCapacity).ToString();
-        float bar_size = 0;
-        int i = 0;
-        foreach(UnityEngine.UI.Image img in Bars)
-        {
-            float shift_amount = 300.0f * _current_capacity[i] / _max_capacity;
-            RectTransform r = img.GetComponent<RectTransform>();
-            r.localPosition = new Vector3(-bar_size, 0);
-            r.sizeDelta = new Vector2(shift_amount, r.sizeDelta.y);
-            bar_size += shift_amount;
-            i++;
-        }
-    }
     public bool CheckIfSpace(float amount, int type = 0)
     {
         float current_amount = currentCapacity;
         return (current_amount + amount <= _max_capacity);
+    }
+    public bool CheckIfQuantity(float amount, int type = 0)
+    {
+        return (_current_capacity[type] >= amount);
     }
     public float Add(float amount, int type = 0)
     {
@@ -79,7 +68,23 @@ public class CapacityBar : MonoBehaviour {
     {
         return Add(-amount, type);
     }
-    private void Start()
+
+    private void update_capacity_bars()
+    {
+        CurrentCapacity.text = Mathf.RoundToInt(currentCapacity).ToString();
+        float bar_size = 0;
+        int i = 0;
+        foreach (UnityEngine.UI.Image img in Bars)
+        {
+            float shift_amount = 300.0f * _current_capacity[i] / _max_capacity;
+            RectTransform r = img.GetComponent<RectTransform>();
+            r.localPosition = new Vector3(-bar_size, 0);
+            r.sizeDelta = new Vector2(shift_amount, r.sizeDelta.y);
+            bar_size += shift_amount;
+            i++;
+        }
+    }
+    private void Awake()
     {
         if (Bars == null)
         {

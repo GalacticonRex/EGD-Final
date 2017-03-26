@@ -21,7 +21,7 @@ public class Wormhole : MonoBehaviour {
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerMove>() != null)
+        if (other.GetComponent<Player>() != null)
             _coroutine = StartCoroutine(LaunchNewScene(2.0f));
         else
             Destroy(other.gameObject);

@@ -15,11 +15,11 @@ public class OreDeposit : MonoBehaviour {
     {
         if ( _total <= amount )
         {
-            Asteroid parent = GetComponentInParent<Asteroid>();
+            AsteroidObject parent = GetComponentInParent<AsteroidObject>();
             MeshRenderer mr = parent.GetComponent<MeshRenderer>();
-            mr.sharedMaterial = parent.Source.GetNormalMaterial();
+            mr.sharedMaterial = Asteroids.GetNormalMaterial();
 
-            Caption cap = GetComponentInParent<Caption>();
+            CaptionText cap = GetComponentInParent<CaptionText>();
             Destroy(cap);
 
             foreach ( Transform t in transform )
