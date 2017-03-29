@@ -91,7 +91,7 @@ namespace LastStar
         public int Left = -1;
         public int Right = -1;
 
-        private PlayerMove _player;
+        private CameraSystem _player;
         private TechPiece _root;
         private Renderer _renderer;
         private Collider _collider;
@@ -106,7 +106,7 @@ namespace LastStar
 
         private void Start()
         {
-            _player = FindObjectOfType<PlayerMove>();
+            _player = FindObjectOfType<CameraSystem>();
             _renderer = GetComponent<Renderer>();
             _collider = GetComponent<Collider>();
 
