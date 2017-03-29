@@ -17,6 +17,9 @@ namespace LastStar
         public int[] Clustering;
         public int Maximum;
 
+        public float MinYRange = 16.0f;
+        public float MaxYRange = 48.0f;
+
         public float MinAsteroidSize = 4.0f;
         public float MaxAsteroidSize = 12.0f;
 
@@ -26,11 +29,11 @@ namespace LastStar
             float yval;
             if (Random.value < 0.5f)
             {
-                yval = Random.Range(8.0f, 12.0f);
+                yval = Random.Range(MinYRange, MaxYRange);
             }
             else
             {
-                yval = Random.Range(-12.0f, -8.0f);
+                yval = Random.Range(-MaxYRange, -MinYRange);
             }
             return new Vector3(v.x, yval, v.y);
         }
@@ -62,7 +65,7 @@ namespace LastStar
 
                 CaptionText c = ore.GetComponent<CaptionText>();
                 c.TextData = "Ore Deposit of " + Mathf.RoundToInt(o.InitialAmount).ToString();
-                c.Radius = 2.0f * go.transform.localScale.x;
+                c.Radius = 4.0f * go.transform.localScale.x;
             }
             else
             {

@@ -7,8 +7,8 @@ namespace LastStar
     public class ResourceManager : MonoBehaviour
     {
         static private List<TechPiece> _tech_stored = new List<TechPiece>();
-        static private float _energy_capacity = 100.0f;
-        static private float _energy_stored = 60.0f;
+        static private float _energy_capacity = 1000.0f;
+        static private float _energy_stored = 1000.0f;
         static private float _storage_capacity = 10000.0f;
         static private float _storage_ore = 0;
         static private ulong _current_year = 16182468175968148519;

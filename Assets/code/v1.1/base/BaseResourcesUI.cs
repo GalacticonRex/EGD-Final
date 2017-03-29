@@ -27,16 +27,14 @@ namespace LastStar {
                 _base_resources.AddTech(p);
         }
 
-        // Use this for initialization
-        void Start() {
+        private void Start() {
             _player_resources = FindObjectOfType<ResourceManager>();
             _base_resources = FindObjectOfType<BaseResources>();
             if (_base_resources == null)
                 Destroy(this);
         }
 
-        // Update is called once per frame
-        void Update() {
+        private void Update() {
             Energy.text = Mathf.RoundToInt(_base_resources.EnergyStored()).ToString();
             Ore.text = Mathf.RoundToInt(_base_resources.OreStored()).ToString();
             Tech.text = _base_resources.TechStored().ToString();

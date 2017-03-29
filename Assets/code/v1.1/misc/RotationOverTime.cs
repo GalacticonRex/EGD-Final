@@ -9,7 +9,7 @@ namespace LastStar
         public float Speed;
         void Update()
         {
-            transform.rotation = transform.rotation * Quaternion.AngleAxis(Speed * Time.deltaTime, transform.up);
+            transform.rotation = transform.rotation * Quaternion.AngleAxis(Speed * Time.deltaTime, Vector3.up);
         }
     }
 }
