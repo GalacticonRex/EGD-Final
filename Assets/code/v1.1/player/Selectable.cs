@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Selectable : MonoBehaviour {
-    
+namespace LastStar
+{
+    public class Selectable : MonoBehaviour
+    {
+
+    }
 }

@@ -2,31 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScanColor : MonoBehaviour
+namespace LastStar
 {
-    public Color ScannerColor = Color.blue;
-    public Material ScannerMaterial;
-
-    private float _last_known;
-    private Player _mode_ctrl;
-
-    // Use this for initialization
-    void Start()
+    public class ScanColor : MonoBehaviour
     {
-        _mode_ctrl = FindObjectOfType<Player>();
+        public Color ScannerColor = Color.blue;
+        public Material ScannerMaterial;
 
-        if (_mode_ctrl == null)
-            Destroy(this);
-    }
+        private float _last_known;
+        private Player _mode_ctrl;
 
-    // Update is called once per frame
-    void Update()
-    {
-        float value = _mode_ctrl.cameraSystem.interpolation;
-        if (_last_known != value)
+        // Use this for initialization
+        void Start()
         {
-            ScannerMaterial.SetFloat("_Mode", value);
-            _last_known = value;
+            _mode_ctrl = FindObjectOfType<Player>();
+
+            if (_mode_ctrl == null)
+                Destroy(this);
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            float value = _mode_ctrl.cameraSystem.interpolation;
+            if (_last_known != value)
+            {
+                ScannerMaterial.SetFloat("_Mode", value);
+                _last_known = value;
+            }
         }
     }
 }

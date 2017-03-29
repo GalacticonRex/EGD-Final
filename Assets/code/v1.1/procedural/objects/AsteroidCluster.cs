@@ -2,102 +2,106 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AsteroidCluster : MonoBehaviour {
-    public GameObject AsteroidSrc;
-
-    public GameObject OreDepositSrc;
-    public float OreProbability = 1.0f;
-    public float OreMinimum = 50.0f;
-    public float OreMaximum = 1000.0f;
-
-    public float Radius;
-    public int[] Clustering;
-    public int Maximum;
-
-    public float MinAsteroidSize = 4.0f;
-    public float MaxAsteroidSize = 12.0f;
-
-    private Vector3 GeneratePosition(float radius)
+namespace LastStar
+{
+    public class AsteroidCluster : MonoBehaviour
     {
-        Vector2 v = Random.insideUnitCircle * radius;
-        float yval;
-        if (Random.value < 0.5f)
+        public GameObject AsteroidSrc;
+
+        public GameObject OreDepositSrc;
+        public float OreProbability = 1.0f;
+        public float OreMinimum = 50.0f;
+        public float OreMaximum = 1000.0f;
+
+        public float Radius;
+        public int[] Clustering;
+        public int Maximum;
+
+        public float MinAsteroidSize = 4.0f;
+        public float MaxAsteroidSize = 12.0f;
+
+        private Vector3 GeneratePosition(float radius)
         {
-            yval = Random.Range(8.0f, 12.0f);
-        }
-        else
-        {
-            yval = Random.Range(-12.0f, -8.0f);
-        }
-        return new Vector3(v.x, yval, v.y);
-    }
-    private void GenerateTransform(Vector3 location, float radius, Transform t)
-    {
-        float v = (Random.value * Random.value) * (MaxAsteroidSize - MinAsteroidSize) + MinAsteroidSize;
-
-        t.localPosition = location + GeneratePosition(radius);
-        t.localRotation = Quaternion.LookRotation(Random.onUnitSphere, Random.onUnitSphere);
-        t.localScale = new Vector3(v, v, v);
-    }
-    private GameObject MakeAsteroid(Vector3 location, float radius)
-    {
-        GameObject go = Instantiate(AsteroidSrc);
-        go.transform.parent = transform;
-
-        if ( Random.value < OreProbability / 100.0f )
-        {
-            go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetSpecialMaterial();
-
-            GameObject ore = Instantiate(OreDepositSrc);
-            ore.transform.parent = go.transform;
-            ore.transform.localPosition = new Vector3();
-
-            OreDeposit o = go.AddComponent<OreDeposit>();
-            o.InitialAmount = (Random.value * Random.value) * (OreMaximum - OreMinimum) + OreMinimum;
-
-            GenerateTransform(location, radius, go.transform);
-
-            CaptionText c = ore.GetComponent<CaptionText>();
-            c.TextData = "Ore Deposit of " + Mathf.RoundToInt(o.InitialAmount).ToString();
-            c.Radius = 2.0f * go.transform.localScale.x;
-        }
-        else
-        {
-            go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetNormalMaterial();
-            GenerateTransform(location, radius, go.transform);
-        }
-
-        SphereCollider sp = go.GetComponent<SphereCollider>();
-        sp.radius = 1.3f;
-
-        return go;
-    }
-    private void GenerateCluster(Vector3 location, float radius, int count, int depth)
-    {
-        if (depth == 0)
-        {
-            for (int i = 0; i < count; i++)
+            Vector2 v = Random.insideUnitCircle * radius;
+            float yval;
+            if (Random.value < 0.5f)
             {
-                GameObject go = MakeAsteroid(location, radius);
-                go.name = "Asteroid " + go.transform.position.ToString();
+                yval = Random.Range(8.0f, 12.0f);
+            }
+            else
+            {
+                yval = Random.Range(-12.0f, -8.0f);
+            }
+            return new Vector3(v.x, yval, v.y);
+        }
+        private void GenerateTransform(Vector3 location, float radius, Transform t)
+        {
+            float v = (Random.value * Random.value) * (MaxAsteroidSize - MinAsteroidSize) + MinAsteroidSize;
+
+            t.localPosition = location + GeneratePosition(radius);
+            t.localRotation = Quaternion.LookRotation(Random.onUnitSphere, Random.onUnitSphere);
+            t.localScale = new Vector3(v, v, v);
+        }
+        private GameObject MakeAsteroid(Vector3 location, float radius)
+        {
+            GameObject go = Instantiate(AsteroidSrc);
+            go.transform.parent = transform;
+
+            if (Random.value < OreProbability / 100.0f)
+            {
+                go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetSpecialMaterial();
+
+                GameObject ore = Instantiate(OreDepositSrc);
+                ore.transform.parent = go.transform;
+                ore.transform.localPosition = new Vector3();
+
+                OreDeposit o = go.AddComponent<OreDeposit>();
+                o.InitialAmount = (Random.value * Random.value) * (OreMaximum - OreMinimum) + OreMinimum;
+
+                GenerateTransform(location, radius, go.transform);
+
+                CaptionText c = ore.GetComponent<CaptionText>();
+                c.TextData = "Ore Deposit of " + Mathf.RoundToInt(o.InitialAmount).ToString();
+                c.Radius = 2.0f * go.transform.localScale.x;
+            }
+            else
+            {
+                go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetNormalMaterial();
+                GenerateTransform(location, radius, go.transform);
+            }
+
+            SphereCollider sp = go.GetComponent<SphereCollider>();
+            sp.radius = 1.3f;
+
+            return go;
+        }
+        private void GenerateCluster(Vector3 location, float radius, int count, int depth)
+        {
+            if (depth == 0)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    GameObject go = MakeAsteroid(location, radius);
+                    go.name = "Asteroid " + go.transform.position.ToString();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    Vector3 new_location = location + GeneratePosition(radius);
+                    GenerateCluster(new_location, radius / 3, Clustering[depth - 1], depth - 1);
+                }
             }
         }
-        else
+        private void Start()
         {
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 new_location = location + GeneratePosition(radius);
-                GenerateCluster(new_location, radius / 3, Clustering[depth - 1], depth - 1);
-            }
-        }
-    }
-    private void Start()
-    {
-        int asteroidsPerCluster = 1;
-        for (int i = 0; i < Clustering.Length; i++)
-            asteroidsPerCluster *= Clustering[i];
+            int asteroidsPerCluster = 1;
+            for (int i = 0; i < Clustering.Length; i++)
+                asteroidsPerCluster *= Clustering[i];
 
-        int totalClusters = Maximum / asteroidsPerCluster;
-        GenerateCluster(new Vector3(), Radius, totalClusters, Clustering.Length);
+            int totalClusters = Maximum / asteroidsPerCluster;
+            GenerateCluster(new Vector3(), Radius, totalClusters, Clustering.Length);
+        }
     }
 }
