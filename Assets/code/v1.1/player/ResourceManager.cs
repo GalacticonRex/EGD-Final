@@ -14,8 +14,8 @@ namespace LastStar
         static private ulong _current_year = 16182468175968148519;
         static private ulong _final_year = 18446744073709551615;
 
-        static readonly int StoreOre = 0;
-        static readonly int StoreTech = 1;
+        static public readonly int StoreOre = 0;
+        static public readonly int StoreTech = 1;
 
         public CapacityBar Energy;
         public CapacityBar Storage;
@@ -25,6 +25,19 @@ namespace LastStar
         public float ScanDistance = 100.0f;
 
         private float _current_subyear = 0.0f;
+        
+        public ulong CurrentYear()
+        {
+            return _current_year;
+        }
+        public float CurrentEnergy()
+        {
+            return _energy_stored;
+        }
+        public float CurrentStorage()
+        {
+            return Storage.remaining;
+        }
 
         public bool RequestTime(ulong years)
         {
@@ -37,6 +50,28 @@ namespace LastStar
                 _current_year += years;
                 return true;
             }
+        }
+
+        public void Refuel(BaseResources _base_res)
+        {
+            float en = Mathf.Min(Energy.remaining, _base_res.EnergyStored());
+            Energy.Add(en);
+            _energy_stored += en;
+            _base_res.AddEnergy(-en);
+        }
+        public void OffloadOre(BaseResources _base_res)
+        {
+            float ore = Storage.currentCapacity;
+            Storage.Remove(ore, StoreOre);
+            _storage_ore -= ore;
+            _base_res.AddOre(ore);
+        }
+        public List<TechPiece> OffloadTech(BaseResources _base_res)
+        {
+            Storage.Set(0, StoreTech);
+            List<TechPiece> old = _tech_stored;
+            _tech_stored = new List<TechPiece>();
+            return old;
         }
 
         public bool RequestEnergy(float amount)

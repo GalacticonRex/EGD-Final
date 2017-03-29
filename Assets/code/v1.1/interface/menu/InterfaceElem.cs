@@ -6,7 +6,14 @@ namespace LastStar
 {
     public class InterfaceElem : MonoBehaviour
     {
-
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
         // Use this for initialization
         void Start()
         {

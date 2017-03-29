@@ -70,6 +70,19 @@ namespace LastStar
         {
             return Add(-amount, type);
         }
+        public float Set(float amount, int type = 0 )
+        {
+            float current_amount = currentCapacity;
+            float old_amount = _current_capacity[type];
+            float delta = amount - old_amount;
+            float new_amount = Mathf.Max(0.0f, Mathf.Min(_max_capacity, current_amount + delta));
+
+            _current_capacity[type] = new_amount;
+
+            update_capacity_bars();
+
+            return _current_capacity[type];
+        }
 
         private void update_capacity_bars()
         {

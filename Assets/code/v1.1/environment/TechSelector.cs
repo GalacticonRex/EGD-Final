@@ -9,6 +9,7 @@ namespace LastStar
         private Player _player;
         private Renderer _renderer;
         private NotificationLog _log;
+        private bool _hover;
 
         void Start()
         {
@@ -18,12 +19,34 @@ namespace LastStar
             _renderer.enabled = false;
         }
 
+        void PushSuccess(TechComponent tech, float tw)
+        {
+            _log.push(new Notification(
+                "Collected Tech",
+                tech.Tech.Name(),
+                "Tech collection was successful! Total weight was " + Mathf.RoundToInt(tw).ToString())
+            );
+            Destroy(tech.gameObject);
+        }
+        void PushFailure(TechComponent tech, float tw)
+        {
+            _log.push(new Notification(
+                "Not Enough Storage",
+                Mathf.RoundToInt(tw).ToString() + " / " + _player.resourceManager.Storage.remaining,
+                "There is not enough space to store " + tech.Tech.Name())
+            );
+        }
+
         void Update()
         {
-            Selectable s = _player.selector.selectedItem;
+            Selectable s = null;
+            if (!_player.inputs.ui && _player.inputs.hit != null)
+                s = _player.inputs.hit.GetComponent<Selectable>();
+
             if (s == null)
             {
                 _renderer.enabled = false;
+                _hover = false;
                 return;
             }
 
@@ -31,34 +54,37 @@ namespace LastStar
             if (tech == null)
             {
                 _renderer.enabled = false;
+                _hover = false;
             }
             else
             {
+                Debug.Log("HIT!");
                 transform.position = tech.transform.position;
-                transform.localScale = tech.transform.localScale;
+                transform.localScale = tech.transform.localScale * 5.0f;
                 _renderer.enabled = true;
-                if (Input.GetMouseButton(0))
-                {
-                    _renderer.material.color = new Color(1.0f, 0.0f, 0.0f, 0.4f);
 
+                if (_hover && Input.GetMouseButtonUp(0))
+                {
                     float tw = tech.Tech.GetTotalWeight();
                     if (_player.resourceManager.RequestStorage(tech.Tech))
                     {
-                        _log.push(new Notification("Collected Tech",
-                                                    tech.Tech.Name(),
-                                                    "Tech collection was successful! Total weight was " + Mathf.RoundToInt(tw).ToString()));
-                        Destroy(tech.gameObject);
+                        PushSuccess(tech, tw);
                     }
                     else
                     {
-                        _log.push(new Notification("Not Enough Storage",
-                                                    Mathf.RoundToInt(tw).ToString() + " / " + _player.resourceManager.Storage.remaining,
-                                                    "There is not enough space to store " + tech.Tech.Name()));
+                        PushFailure(tech, tw);
                     }
+                }
+
+                if (Input.GetMouseButton(0))
+                {
+                    _renderer.material.color = new Color(1.0f, 0.0f, 0.0f, 0.4f);
+                    _hover = true;
                 }
                 else
                 {
                     _renderer.material.color = new Color(1.0f, 0.6796875f, 0.89453125f, 0.4f);
+                    _hover = false;
                 }
             }
         }

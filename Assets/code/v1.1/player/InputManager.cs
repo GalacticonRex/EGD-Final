@@ -30,12 +30,22 @@ namespace LastStar
             ptr.position = Input.mousePosition;
             EventSystem.current.RaycastAll(ptr, results);
 
-            if (results.Count > 0)
+            int ui_encounterd = -1;
+            for(int i=0;i<results.Count;i++)
             {
-                print("Hit UI!");
+                InterfaceMenu menu = results[i].gameObject.GetComponentInParent<InterfaceMenu>();
+                if ( menu != null )
+                {
+                    ui_encounterd = i;
+                    break;
+                }
+            }
+
+            if (ui_encounterd != -1)
+            {
                 _hit_ui = true;
-                _hit = results[0].gameObject;
-                _hit_location = results[0].worldPosition;
+                _hit = results[ui_encounterd].gameObject;
+                _hit_location = results[ui_encounterd].worldPosition;
             }
             else
             {
@@ -44,13 +54,23 @@ namespace LastStar
                 Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(r, out hit))
                 {
-                    print("Hit Object!");
-                    _hit = hit.collider.gameObject;
-                    _hit_location = hit.point;
+                    Selectable s = hit.collider.GetComponent<Selectable>();
+                    if ( s == null )
+                        s = hit.collider.GetComponentInParent<Selectable>();
+
+                    if ( s != null )
+                    {
+                        _hit = hit.collider.gameObject;
+                        _hit_location = hit.point;
+                    }
+                    else
+                    {
+                        _hit = null;
+                        _hit_location = new Vector3();
+                    }
                 }
                 else
                 {
-                    print("Hit Nothing!");
                     _hit = null;
                     _hit_location = new Vector3();
                 }

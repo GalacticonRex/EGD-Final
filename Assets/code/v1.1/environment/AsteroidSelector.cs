@@ -22,7 +22,10 @@ namespace LastStar
 
         void Update()
         {
-            Selectable s = _player.selector.selectedItem;
+            Selectable s = null;
+            if (!_player.inputs.ui && _player.inputs.hit != null)
+                s = _player.inputs.hit.GetComponent<Selectable>();
+
             if (s == null)
             {
                 _renderer.enabled = false;
@@ -41,7 +44,7 @@ namespace LastStar
             else
             {
                 transform.position = ore.transform.position;
-                transform.localScale = ore.transform.localScale;
+                transform.localScale = ore.transform.localScale * 5.0f;
                 _renderer.enabled = true;
                 if (Input.GetMouseButton(0))
                 {
