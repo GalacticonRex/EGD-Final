@@ -10,6 +10,18 @@ namespace LastStar
         private ParticleSystem _particles;
         private Renderer _renderer;
 
+        void CreateTask(GameObject target, float work)
+        {
+            DroneTask a = target.AddComponent<DroneTask>();
+
+            a.WorkRemaining = work;
+            a.WorkRadius = 0.5f;
+            a.WorkPosition = Random.onUnitSphere * transform.localScale.x;
+            a.WorkAxis = a.WorkPosition.normalized;
+
+            _player.droneManager.QueueDroneTask(a);
+        }
+
         void Start()
         {
             _player = FindObjectOfType<Player>();
@@ -35,11 +47,9 @@ namespace LastStar
             }
 
             OreDeposit ore = s.GetComponent<OreDeposit>();
-            if (ore == null)
+            if (ore == null || ore.Extracting == true)
             {
                 _renderer.enabled = false;
-                if (_particles.isPlaying)
-                    _particles.Stop();
             }
             else
             {
@@ -49,27 +59,18 @@ namespace LastStar
                 if (Input.GetMouseButton(0))
                 {
                     _renderer.material.color = new Color(1.0f, 0.0f, 0.0f, 0.4f);
-
-                    float got = ore.Extract(Mathf.Min(_player.resourceManager.Storage.remaining, 100.0f * Time.deltaTime));
-
-                    CaptionText t = ore.GetComponentInChildren<CaptionText>();
-                    t.Text = "Ore Deposit of " + Mathf.RoundToInt(ore.Remaining()).ToString();
-
-                    _player.resourceManager.RequestStorage(got);
-
-                    if (got > 0)
+                    if ( Input.GetMouseButtonDown(0) )
                     {
-                        if (!_particles.isPlaying)
-                            _particles.Play();
+                        float value = ore.Remaining();
+                        for (; value > 0.0f; value -= 100.0f)
+                        {
+                            CreateTask(ore.gameObject, 10.0f);
+                        }
                     }
-                    else if (_particles.isPlaying)
-                        _particles.Stop();
                 }
                 else
                 {
                     _renderer.material.color = new Color(1.0f, 0.6796875f, 0.89453125f, 0.4f);
-                    if (_particles.isPlaying)
-                        _particles.Stop();
                 }
             }
         }

@@ -90,6 +90,7 @@ namespace LastStar
         public int Bottom = -1;
         public int Left = -1;
         public int Right = -1;
+        public bool Extracting;
 
         private CameraSystem _player;
         private TechPiece _root;

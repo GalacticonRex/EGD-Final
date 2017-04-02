@@ -6,7 +6,6 @@ namespace LastStar
 {
     public class Navigator : MonoBehaviour
     {
-
         private CameraSystem _camera;
         private ObjectSeletor _selection;
         private ResourceManager _resources;

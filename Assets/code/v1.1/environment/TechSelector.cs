@@ -36,6 +36,17 @@ namespace LastStar
                 "There is not enough space to store " + tech.Tech.Name())
             );
         }
+        void CreateTask()
+        {
+            DroneTask a = gameObject.AddComponent<DroneTask>();
+
+            a.WorkRemaining = 1.0f;
+            a.WorkRadius = 0.5f;
+            a.WorkPosition = Random.onUnitSphere;
+            a.WorkAxis = a.WorkPosition.normalized;
+
+            _player.droneManager.QueueDroneTask(a);
+        }
 
         void Update()
         {
@@ -63,17 +74,10 @@ namespace LastStar
                 transform.localScale = tech.transform.localScale * 5.0f;
                 _renderer.enabled = true;
 
-                if (_hover && Input.GetMouseButtonUp(0))
+                if (!tech.Extracting && _hover && Input.GetMouseButtonUp(0))
                 {
-                    float tw = tech.Tech.GetTotalWeight();
-                    if (_player.resourceManager.RequestStorage(tech.Tech))
-                    {
-                        PushSuccess(tech, tw);
-                    }
-                    else
-                    {
-                        PushFailure(tech, tw);
-                    }
+                    CreateTask();
+                    tech.Extracting = true;
                 }
 
                 if (Input.GetMouseButton(0))

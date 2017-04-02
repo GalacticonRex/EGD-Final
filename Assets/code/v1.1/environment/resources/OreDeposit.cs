@@ -7,6 +7,7 @@ namespace LastStar
     public class OreDeposit : MonoBehaviour
     {
         public float InitialAmount;
+        public bool Extracting;
 
         private float _total;
 
@@ -40,6 +41,7 @@ namespace LastStar
 
         private void Start()
         {
+            Extracting = false;
             _total = InitialAmount;
         }
     }

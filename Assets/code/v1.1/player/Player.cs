@@ -14,6 +14,7 @@ namespace LastStar
         private Navigator _navigation;
         private BaseManager _base;
         private InterfaceMenu _menus;
+        private DroneManager _manager;
 
         private bool _docked;
 
@@ -36,6 +37,10 @@ namespace LastStar
         public Navigator navigator
         {
             get { return _navigation; }
+        }
+        public DroneManager droneManager
+        {
+            get { return _manager; }
         }
         public bool docked
         {
@@ -70,6 +75,7 @@ namespace LastStar
             _navigation = GetComponent<Navigator>();
             _base = FindObjectOfType<BaseManager>();
             _menus = FindObjectOfType<InterfaceMenu>();
+            _manager = FindObjectOfType<DroneManager>();
         }
 
         private void Update()
