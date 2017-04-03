@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LastStar {
+    [System.Serializable]
+    public class DroneTaskEvent : UnityEngine.Events.UnityEvent<DroneAI>
+    {
+    }
+
     public class DroneTask : MonoBehaviour {
 
-        public UnityEngine.Events.UnityEvent<DroneAI> OnTaskComplete;
-        public UnityEngine.Events.UnityEvent<DroneAI> DuringTask;
+        public DroneTaskEvent OnTaskComplete;
+        public DroneTaskEvent DuringTask;
 
         public Vector3 WorkPosition;
         public Vector3 WorkAxis;

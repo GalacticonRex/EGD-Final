@@ -45,6 +45,10 @@ namespace LastStar
             }
         }
 
+        public float Amount(int type)
+        {
+            return _current_capacity[type];
+        }
         public bool CheckIfSpace(float amount, int type = 0)
         {
             float current_amount = currentCapacity;

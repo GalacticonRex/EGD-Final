@@ -61,7 +61,7 @@ namespace LastStar
         }
         public void OffloadOre(BaseResources _base_res)
         {
-            float ore = Storage.currentCapacity;
+            float ore = Storage.Amount(0);
             Storage.Remove(ore, StoreOre);
             _storage_ore -= ore;
             _base_res.AddOre(ore);

@@ -10,6 +10,7 @@ namespace LastStar {
         public float MaxWeight = 1000.0f;
         public float MaxVelocity = 1.0f;
         public float MaxAcceleration = 2.0f;
+        public float OreExtractionSpeed = 10.0f;
 
         private bool _arrived;
         private float _acceleration;
@@ -21,6 +22,15 @@ namespace LastStar {
         
         private Quaternion _local_init_rotation;
         private float _local_rotation_lerp;
+
+        public void AddOre(float a)
+        {
+            _ore_stored += a;
+        }
+        public void AddTech(TechPiece t)
+        {
+            _tech_stored = t;
+        }
 
         public float GetOre()
         {

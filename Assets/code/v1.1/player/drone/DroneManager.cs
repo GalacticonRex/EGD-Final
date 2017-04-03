@@ -13,6 +13,8 @@ namespace LastStar
         private Dictionary<DroneAI, DroneTask> _drone_to_task;
         private Dictionary<DroneTask, DroneAI> _task_to_drone;
 
+        private ResourceManager _resources;
+
         public void QueueDroneTask(DroneTask task)
         {
             _tasks.Add(task);
@@ -29,11 +31,11 @@ namespace LastStar
 
             if (t != null)
             {
-                
+                _resources.RequestStorage(t);
             }
             if (o > 0)
             {
-
+                _resources.RequestStorage(o);
             }
 
             Destroy(drone.gameObject);
@@ -41,6 +43,8 @@ namespace LastStar
         }
         private void Start()
         {
+            _resources = FindObjectOfType<ResourceManager>();
+
             _tasks = new List<DroneTask>();
             _drone_to_task = new Dictionary<DroneAI, DroneTask>();
             _task_to_drone = new Dictionary<DroneTask, DroneAI>();

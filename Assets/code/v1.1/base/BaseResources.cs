@@ -53,6 +53,7 @@ namespace LastStar {
         void Update() {
             _energy_stored += _energy_generation * Time.deltaTime;
             _ore_stored += _ore_generation * Time.deltaTime;
+            _last_year_checked = _resources.CurrentYear();
         }
     }
 }

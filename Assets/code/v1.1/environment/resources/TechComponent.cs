@@ -105,6 +105,32 @@ namespace LastStar
             }
         }
 
+        public void PickUp(DroneAI drone)
+        {
+            Vector3 dif = drone.transform.position - transform.position;
+
+            transform.SetParent(drone.transform);
+            transform.localPosition = dif;
+
+            drone.AddTech(_root);
+
+            // Destroy Colliders
+            Collider[] collids = GetComponentsInChildren<Collider>();
+            foreach(Collider collid in collids)
+            {
+                Destroy(collid);
+            }
+
+            // Destroy Caption Text
+            CaptionText cap = GetComponent<CaptionText>();
+            Destroy(cap);
+            
+            // Destroy Caption
+            Canvas canv = GetComponentInChildren<Canvas>();
+            if (canv != null)
+                Destroy(canv.gameObject);
+        }
+
         private void Start()
         {
             _player = FindObjectOfType<CameraSystem>();

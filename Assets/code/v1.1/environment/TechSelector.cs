@@ -36,9 +36,11 @@ namespace LastStar
                 "There is not enough space to store " + tech.Tech.Name())
             );
         }
-        void CreateTask()
+        void CreateTask(TechComponent tech)
         {
             DroneTask a = gameObject.AddComponent<DroneTask>();
+            a.OnTaskComplete = new DroneTaskEvent();
+            a.OnTaskComplete.AddListener(tech.PickUp);
 
             a.WorkRemaining = 1.0f;
             a.WorkRadius = 0.5f;
@@ -76,7 +78,7 @@ namespace LastStar
 
                 if (!tech.Extracting && _hover && Input.GetMouseButtonUp(0))
                 {
-                    CreateTask();
+                    CreateTask(tech);
                     tech.Extracting = true;
                 }
 
