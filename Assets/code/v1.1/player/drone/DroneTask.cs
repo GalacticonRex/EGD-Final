@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace LastStar {
     public class DroneTask : MonoBehaviour {
-        
+
+        public UnityEngine.Events.UnityEvent<DroneAI> OnTaskComplete;
+        public UnityEngine.Events.UnityEvent<DroneAI> DuringTask;
+
         public Vector3 WorkPosition;
         public Vector3 WorkAxis;
 
@@ -27,18 +30,6 @@ namespace LastStar {
         private void Start()
         {
             _manager = FindObjectOfType<DroneManager>();
-        }
-        private void Update()
-        {
-            if (WorkRemaining <= 0)
-            {
-                Destroy(this);
-
-                _manager.FinishDroneTask(this);
-
-                _drone.Task = null;
-                _drone.ReturnToShip = true;
-            }
         }
 
     }

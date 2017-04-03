@@ -24,8 +24,18 @@ namespace LastStar
         }
         public void ReturnToShip(DroneAI drone)
         {
-            if (drone.OnReturnToShip != null)
-                drone.OnReturnToShip.Invoke(drone);
+            float o = drone.GetOre();
+            TechPiece t = drone.GetTech();
+
+            if (t != null)
+            {
+                
+            }
+            if (o > 0)
+            {
+
+            }
+
             Destroy(drone.gameObject);
             DockedDrones++;
         }
@@ -36,7 +46,7 @@ namespace LastStar
             _task_to_drone = new Dictionary<DroneTask, DroneAI>();
         }
         private void Update()
-        {
+        {   
             if ( _tasks.Count > 0 && DockedDrones > 0 )
             {
                 GameObject go = Instantiate(DronePrefab);

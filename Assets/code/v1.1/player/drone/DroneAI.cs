@@ -5,10 +5,6 @@ using UnityEngine;
 namespace LastStar {
     public class DroneAI : MonoBehaviour {
 
-        public UnityEngine.Events.UnityEvent<DroneAI> OnTaskComplete;
-        public UnityEngine.Events.UnityEvent<DroneAI> DuringTask;
-        public UnityEngine.Events.UnityEvent<DroneAI> OnReturnToShip;
-
         public DroneTask Task;
         public bool ReturnToShip;
         public float MaxWeight = 1000.0f;
@@ -25,6 +21,15 @@ namespace LastStar {
         
         private Quaternion _local_init_rotation;
         private float _local_rotation_lerp;
+
+        public float GetOre()
+        {
+            return _ore_stored;
+        }
+        public TechPiece GetTech()
+        {
+            return _tech_stored;
+        }
 
         private void Start()
         {
@@ -71,13 +76,13 @@ namespace LastStar {
                     transform.rotation = target;
                     Task.WorkRemaining -= Time.deltaTime;
 
-                    if (DuringTask != null)
-                        DuringTask.Invoke(this);
+                    if (Task.DuringTask != null)
+                        Task.DuringTask.Invoke(this);
 
                     if (Task.WorkRemaining <= 0)
                     {
-                        if (OnTaskComplete != null)
-                            OnTaskComplete.Invoke(this);
+                        if (Task.OnTaskComplete != null)
+                            Task.OnTaskComplete.Invoke(this);
                         ReturnToShip = true;
                         Task = null;
                     }
