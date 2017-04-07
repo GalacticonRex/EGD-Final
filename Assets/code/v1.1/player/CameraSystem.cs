@@ -18,6 +18,17 @@ namespace LastStar
         #endregion
 
         #region Properties
+        public float additionalFOV
+        {
+            get
+            {
+                return _actual_additional_fov;
+            }
+            set
+            {
+                _target_additional_fov = value;
+            }
+        }
         public float ratio
         {
             get
@@ -60,7 +71,10 @@ namespace LastStar
         }
         #endregion
 
+        public Light ScannerIlluminator;
+
         #region Private Attributes
+        private InterfaceMenu _menus;
         private Camera _player_camera;
 
         private float _camera_lerp;
@@ -70,11 +84,16 @@ namespace LastStar
 
         private Vector2 _last_mouse_pos;
 
+        private float _actual_additional_fov;
+        private float _target_additional_fov;
+
         private bool _isometric_mode;
         #endregion
 
         void Start()
         {
+            _menus = FindObjectOfType<InterfaceMenu>();
+
             _player_camera = GetComponentInChildren<Camera>();
             _camera_scanner = GetComponentInChildren<CameraScanner>();
             _camera_back_view = GetComponentInChildren<CameraBackView>();
@@ -87,10 +106,16 @@ namespace LastStar
 
             _camera_back_view.active = true;
             _camera_scanner.active = false;
+
+            _actual_additional_fov = 0.0f;
+            _target_additional_fov = 0.0f;
         }
 
         void Update()
         {
+            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular)
+                return;
+
             Vector2 mouseMove = mouseDelta;
 
             if (_isometric_mode)
@@ -108,7 +133,9 @@ namespace LastStar
                 }
             }
 
-            _player_camera.fieldOfView = _camera_scanner.fieldOfView * (1 - _camera_lerp) + _camera_back_view.fieldOfView * _camera_lerp;
+            _actual_additional_fov = _target_additional_fov * 0.1f + _actual_additional_fov * 0.9f;
+
+            _player_camera.fieldOfView = (_camera_scanner.fieldOfView) * (1 - _camera_lerp) + (_camera_back_view.fieldOfView + _actual_additional_fov) * _camera_lerp;
             _player_camera.transform.rotation = Quaternion.Lerp(_camera_scanner.rotation, _camera_back_view.rotation, _camera_lerp);
 
             float arm = (_camera_lerp) * _camera_back_view.cameraDistance + (1 - _camera_lerp) * _camera_scanner.cameraDistance;
@@ -116,6 +143,7 @@ namespace LastStar
         }
         private void LateUpdate()
         {
+            ScannerIlluminator.intensity = 1.0f - _camera_lerp;
             _last_mouse_pos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
     }

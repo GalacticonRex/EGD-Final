@@ -37,6 +37,7 @@
 			};
 
 			sampler2D _MainTex;
+			float4 _MainTex_ST;
 			float4 _BaseColor;
 			
 			v2f vert (appdata v)
@@ -44,8 +45,8 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.normal = v.normal;
-				o.uv1 = v.uv1;
-				o.uv2 = v.uv2;
+				o.uv1 = v.uv1 * _MainTex_ST.xy + _MainTex_ST.zw;
+				o.uv2 = v.uv2 * _MainTex_ST.xy + _MainTex_ST.zw;
 				return o;
 			}
 			

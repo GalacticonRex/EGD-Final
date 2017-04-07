@@ -27,6 +27,14 @@ namespace LastStar
 
                 Destroy(_cap);
 
+                DroneTask[] tasks = GetComponents<DroneTask>();
+                foreach (DroneTask task in tasks)
+                {
+                    if (task.assignedDrone != null)
+                        task.assignedDrone.CancelTask();
+                    Destroy(task);
+                }
+
                 foreach (Transform t in transform)
                     Destroy(t.gameObject);
                 Destroy(this);
@@ -42,7 +50,8 @@ namespace LastStar
 
         public void DroneExtraction(DroneAI drone)
         {
-            drone.AddOre(Extract(drone.OreExtractionSpeed * Time.deltaTime));
+            float amount = Extract(drone.OreExtractionSpeed * Time.deltaTime);
+            drone.AddOre(amount);
         }
 
         private void Start()

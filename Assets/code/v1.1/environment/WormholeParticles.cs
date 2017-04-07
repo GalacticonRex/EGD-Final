@@ -23,7 +23,6 @@ namespace LastStar
         }
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("MOO");
             Player p = other.GetComponent<Player>();
             if (p != null)
             {
@@ -32,7 +31,6 @@ namespace LastStar
         }
         private void OnTriggerExit(Collider other)
         {
-            Debug.Log("UN-MOO");
             Player p = other.GetComponent<Player>();
             if (p != null)
             {

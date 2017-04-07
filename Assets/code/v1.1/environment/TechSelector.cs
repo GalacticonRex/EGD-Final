@@ -21,7 +21,7 @@ namespace LastStar
 
         void PushSuccess(TechComponent tech, float tw)
         {
-            _log.push(new Notification(
+            _log.Push(new Notification(
                 "Collected Tech",
                 tech.Tech.Name(),
                 "Tech collection was successful! Total weight was " + Mathf.RoundToInt(tw).ToString())
@@ -30,7 +30,7 @@ namespace LastStar
         }
         void PushFailure(TechComponent tech, float tw)
         {
-            _log.push(new Notification(
+            _log.Push(new Notification(
                 "Not Enough Storage",
                 Mathf.RoundToInt(tw).ToString() + " / " + _player.resourceManager.Storage.remaining,
                 "There is not enough space to store " + tech.Tech.Name())
@@ -38,7 +38,7 @@ namespace LastStar
         }
         void CreateTask(TechComponent tech)
         {
-            DroneTask a = gameObject.AddComponent<DroneTask>();
+            DroneTask a = tech.gameObject.AddComponent<DroneTask>();
             a.OnTaskComplete = new DroneTaskEvent();
             a.OnTaskComplete.AddListener(tech.PickUp);
 

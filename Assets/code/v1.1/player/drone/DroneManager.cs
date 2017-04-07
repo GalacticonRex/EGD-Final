@@ -13,10 +13,16 @@ namespace LastStar
         private Dictionary<DroneAI, DroneTask> _drone_to_task;
         private Dictionary<DroneTask, DroneAI> _task_to_drone;
 
+        private ArtifactScreen _artf_screen;
         private ResourceManager _resources;
 
         public void QueueDroneTask(DroneTask task)
         {
+            DroneTaskManager mngr = task.GetComponent<DroneTaskManager>();
+            if ( mngr == null )
+            {
+                task.gameObject.AddComponent<DroneTaskManager>();
+            }
             _tasks.Add(task);
         }
         public void FinishDroneTask(DroneTask task)
@@ -24,11 +30,20 @@ namespace LastStar
             _task_to_drone.Remove(task);
             _drone_to_task.Remove(task.assignedDrone);
         }
+        public void CancelTask(DroneTask task)
+        {
+            _tasks.Remove(task);
+        }
         public void ReturnToShip(DroneAI drone)
         {
             float o = drone.GetOre();
             TechPiece t = drone.GetTech();
+            Artifact a = drone.GetArtifact();
 
+            if (a != null)
+            {
+                _artf_screen.AddArtifact(a);
+            }
             if (t != null)
             {
                 _resources.RequestStorage(t);
@@ -43,6 +58,8 @@ namespace LastStar
         }
         private void Start()
         {
+            InterfaceMenu im = FindObjectOfType<InterfaceMenu>();
+            _artf_screen = im.ArtifactViewingMenu.GetComponent<ArtifactScreen>();
             _resources = FindObjectOfType<ResourceManager>();
 
             _tasks = new List<DroneTask>();

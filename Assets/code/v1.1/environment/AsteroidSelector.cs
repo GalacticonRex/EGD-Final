@@ -10,9 +10,9 @@ namespace LastStar
         private ParticleSystem _particles;
         private Renderer _renderer;
 
-        void CreateTask(GameObject target, OreDeposit ore, float work)
+        void CreateTask(OreDeposit ore, float work)
         {
-            DroneTask a = target.AddComponent<DroneTask>();
+            DroneTask a = ore.gameObject.AddComponent<DroneTask>();
 
             a.DuringTask = new DroneTaskEvent();
             a.DuringTask.AddListener(ore.DroneExtraction);
@@ -64,7 +64,7 @@ namespace LastStar
                     _renderer.material.color = new Color(1.0f, 0.0f, 0.0f, 0.4f);
                     if ( Input.GetMouseButtonDown(0) )
                     {
-                        CreateTask(ore.gameObject, ore, 10.0f);
+                        CreateTask(ore, 10.0f);
                     }
                 }
                 else

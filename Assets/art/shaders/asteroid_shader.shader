@@ -39,7 +39,7 @@
 			o.Albedo = c.rgb * _Mode + _ModeColor.rgb * (1.0f - _Mode);
 			o.Metallic = tex2D(_MainTex, IN.uv_MainTex).r * _Mode;
 			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
-			o.Smoothness = _Glossiness * _Mode;
+			o.Smoothness = tex2D(_MainTex, IN.uv_MainTex).r * _Mode;
 			o.Alpha = c.a;
 		}
 		ENDCG

@@ -9,6 +9,31 @@ namespace LastStar
         public bool Hide;
         public GameObject[] HideThese;
 
+        public void SwapElements()
+        {
+            Hide = !Hide;
+            foreach (GameObject go in HideThese)
+            {
+                go.SetActive(!Hide);
+            }
+        }
+        public void ShowElements()
+        {
+            Hide = false;
+            foreach (GameObject go in HideThese)
+            {
+                go.SetActive(!Hide);
+            }
+        }
+        public void HideElements()
+        {
+            Hide = true;
+            foreach (GameObject go in HideThese)
+            {
+                go.SetActive(!Hide);
+            }
+        }
+
         void Start()
         {
             if (Hide)

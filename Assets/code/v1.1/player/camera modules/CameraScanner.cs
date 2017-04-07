@@ -9,6 +9,7 @@ namespace LastStar
         public float MinDistance = 400.0f;
         public float MaxDistance = 4000.0f;
         public Vector2 InitialRotation = new Vector2(0, 0);
+        public Vector2 RotationSensitivity = new Vector2(1, 1);
 
         public float ratio
         {
@@ -41,8 +42,8 @@ namespace LastStar
             }
             if (Input.GetMouseButton(1))
             {
-                _target_rot_x += mouseMove.x;
-                _target_rot_y -= mouseMove.y;
+                _target_rot_x += mouseMove.x * RotationSensitivity.x;
+                _target_rot_y -= mouseMove.y * RotationSensitivity.y;
             }
             _actual_rotation = CalculateRotaionFromAngles();
         }

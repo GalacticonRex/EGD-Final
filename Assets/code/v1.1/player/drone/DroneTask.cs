@@ -37,5 +37,10 @@ namespace LastStar {
             _manager = FindObjectOfType<DroneManager>();
         }
 
+        private void OnDestroy()
+        {
+            _manager.CancelTask(this);
+        }
+
     }
 }

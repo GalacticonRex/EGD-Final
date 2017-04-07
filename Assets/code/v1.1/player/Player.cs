@@ -17,6 +17,7 @@ namespace LastStar
         private DroneManager _manager;
 
         private bool _docked;
+        private float _internal_time_scale = 1.0f;
 
         public InputManager inputs
         {
@@ -45,6 +46,10 @@ namespace LastStar
         public bool docked
         {
             get { return _docked; }
+        }
+        public float timeScale
+        {
+            get { return _internal_time_scale; }
         }
 
         private void OnTriggerEnter(Collider other)
@@ -80,10 +85,18 @@ namespace LastStar
 
         private void Update()
         {
+            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular)
+                return;
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _camera.scanMode = !_camera.scanMode;
+                if (_camera.scanMode)
+                    _internal_time_scale = 0.0f;
+                else
+                    _internal_time_scale = 1.0f;
             }
+            Time.timeScale = _internal_time_scale;
         }
     }
 

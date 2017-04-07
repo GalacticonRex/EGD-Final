@@ -29,6 +29,7 @@ namespace LastStar
             {
                 _current_capacity = value;
                 CurrentCapacity.text = Mathf.RoundToInt(_current_capacity).ToString();
+                Debug.Log(gameObject.name + " Current: " + CurrentCapacity.text);
             }
         }
         public float maxCapacity
@@ -41,6 +42,7 @@ namespace LastStar
             {
                 _max_capacity = value;
                 MaxCapacity.text = Mathf.RoundToInt(_max_capacity).ToString();
+                Debug.Log(gameObject.name + " Max: " + MaxCapacity.text);
             }
         }
 

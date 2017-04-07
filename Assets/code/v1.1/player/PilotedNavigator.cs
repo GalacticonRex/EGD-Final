@@ -12,58 +12,130 @@ namespace LastStar
         public KeyCode Stop = KeyCode.S;
         public KeyCode RollLeft = KeyCode.A;
         public KeyCode RollRight = KeyCode.D;
-        public float MaxAcceleration = 0.05f;
-        public float MaxVelocity = 8.0f;
+
+        public float[] MaxAcceleration;
+        public float[] MaxVelocity;
+        public float[] EnergyCost;
 
         public float YawPitchAnglePerSecond = 16.0f;
         public float RollAnglePerSecond = 16.0f;
 
+        private InterfaceMenu _menus;
         private CameraSystem _camera;
+        private ResourceManager _resources;
         private Vector2 _rooted_position;
         private float _acceleration;
-        private float _velocity;
+        private float _current_velocity;
+        private float _target_velocity;
+
+        private int _gear;
+        private float _time_between;
+        private Coroutine _waiting_on_press;
+        private Rigidbody _self;
+
+        private IEnumerator GetTimesPressed()
+        {
+            yield return new WaitForSeconds(_time_between);
+            _waiting_on_press = null;
+        }
 
         private void Start()
         {
+            _menus = FindObjectOfType<InterfaceMenu>();
             _camera = FindObjectOfType<CameraSystem>();
+            _resources = FindObjectOfType<ResourceManager>();
+
+            _self = GetComponent<Rigidbody>();
+
+            _gear = 0;
+            _time_between = 0.2f;
+
+            _acceleration = 0.0f;
+            _current_velocity = 0.0f;
+            _target_velocity = 0.0f;
         }
 
         private void Update()
         {
-            if (Input.GetKey(Accelerate))
-                _acceleration = MaxAcceleration * Time.deltaTime;
-            else if (Input.GetKey(Stop))
-                _acceleration = -MaxVelocity;
-            else
-                _acceleration = -MaxVelocity * Time.deltaTime * 2.0f;
+            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular)
+                return;
 
             if (Input.GetKey(RollLeft))
             {
                 Quaternion roll = Quaternion.AngleAxis(RollAnglePerSecond * Time.deltaTime, Rotated.forward);
-                Rotated.rotation = roll * Rotated.rotation;
+                _self.MoveRotation(roll * Rotated.rotation);
             }
             if (Input.GetKey(RollRight))
             {
                 Quaternion roll = Quaternion.AngleAxis(-RollAnglePerSecond * Time.deltaTime, Rotated.forward);
-                Rotated.rotation = roll * Rotated.rotation;
+                _self.MoveRotation(roll * Rotated.rotation);
             }
             if (Input.GetMouseButtonDown(1))
                 _rooted_position = Input.mousePosition;
 
-            if ( Input.GetMouseButton(1) )
+            if (Input.GetMouseButton(1))
             {
                 Vector2 delta = new Vector2(Input.mousePosition.x - _rooted_position.x, _rooted_position.y - Input.mousePosition.y);
 
                 Vector3 offset = Rotated.up * delta.x + Rotated.right * delta.y;
                 Vector3 cross = Vector3.Cross(Rotated.up, offset.normalized);
 
-                Rotated.rotation = Quaternion.AngleAxis(offset.magnitude / YawPitchAnglePerSecond * Time.deltaTime, offset.normalized) * Rotated.rotation;
+                _self.MoveRotation(Quaternion.AngleAxis(offset.magnitude / YawPitchAnglePerSecond * Time.deltaTime, offset.normalized) * Rotated.rotation);
             }
 
-            _velocity = Mathf.Min(MaxVelocity, Mathf.Max(0.0f, _velocity + _acceleration * Time.deltaTime));
+            if (Input.GetKeyDown(Accelerate))
+            {
+                if (_waiting_on_press == null)
+                    _waiting_on_press = StartCoroutine(GetTimesPressed());
+                else
+                {
+                    _gear++;
+                    StopCoroutine(_waiting_on_press);
+                    _waiting_on_press = null;
+                }
+            }
+            else if ( !Input.GetKey(Accelerate) && _waiting_on_press == null )
+            {
+                _gear = 0;
+            }
 
-            Moved.position += Rotated.forward * _velocity;
+            if (Input.GetKey(Accelerate) && _resources.RequestEnergy(EnergyCost[_gear] * Time.deltaTime))
+            {
+                _acceleration += MaxAcceleration[_gear] * Time.deltaTime;
+                _target_velocity = MaxVelocity[_gear];
+            }
+            else
+            {
+                _target_velocity = 0.0f;
+                if (Input.GetKey(Stop))
+                {
+                    _acceleration = 0.0f;
+                    _current_velocity = 0.0f;
+                }
+                else
+                    _acceleration = MaxVelocity[_gear] * MaxVelocity[_gear] * Time.deltaTime;
+            }
 
+            
+            if (_current_velocity > _target_velocity)
+            {
+                _current_velocity -= _acceleration;
+                if (_current_velocity <= _target_velocity)
+                {
+                    _current_velocity = _target_velocity;
+                }
+            }
+            else
+            {
+                _current_velocity += _acceleration;
+                if (_current_velocity >= _target_velocity)
+                {
+                    _current_velocity = _target_velocity;
+                }
+            }
+
+            _self.MovePosition(Moved.position + Rotated.forward * _current_velocity * Time.deltaTime);
+            _camera.additionalFOV = _current_velocity / 60.0f;
         }
     }
 }

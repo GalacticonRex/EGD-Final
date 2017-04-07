@@ -18,6 +18,7 @@ namespace LastStar {
 
         private float _ore_stored;
         private TechPiece _tech_stored;
+        private Artifact _artf_stored;
         private DroneManager _manager;
         
         private Quaternion _local_init_rotation;
@@ -31,6 +32,10 @@ namespace LastStar {
         {
             _tech_stored = t;
         }
+        public void AddArtifact(Artifact a)
+        {
+            _artf_stored = a;
+        }
 
         public float GetOre()
         {
@@ -40,12 +45,22 @@ namespace LastStar {
         {
             return _tech_stored;
         }
+        public Artifact GetArtifact()
+        {
+            return _artf_stored;
+        }
+
+        public void CancelTask()
+        {
+            ReturnToShip = true;
+        }
 
         private void Start()
         {
             _manager = FindObjectOfType<DroneManager>();
             _ore_stored = 0;
             _tech_stored = null;
+            _artf_stored = null;
         }
 
         private void Update() {
@@ -57,7 +72,7 @@ namespace LastStar {
                 Vector3 target = _manager.transform.position;
                 Vector3 distance = target - transform.position;
 
-                if (distance.magnitude <= _velocity * Time.deltaTime)
+                if (distance.magnitude <= 3.0f)
                 {
                     _manager.ReturnToShip(this);
                 }

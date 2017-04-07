@@ -43,10 +43,12 @@ namespace LastStar {
 
         void Start() {
             _resources = FindObjectOfType<ResourceManager>();
-            ulong current_year = _resources.CurrentYear();
 
-            _energy_stored += _energy_generation * (float)(_last_year_checked - current_year);
-            _ore_stored += _ore_generation * (float)(_last_year_checked - current_year);
+            ulong current_year = _resources.CurrentYear();
+            ulong delta = current_year - _last_year_checked;
+
+            _energy_stored += _energy_generation * delta;
+            _ore_stored += _ore_generation * delta;
 
             _last_year_checked = current_year;
         }

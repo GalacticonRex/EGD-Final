@@ -7,6 +7,7 @@ namespace LastStar
     public class ResourceManager : MonoBehaviour
     {
         static private List<TechPiece> _tech_stored = new List<TechPiece>();
+        static private List<Artifact> _artf_stored = new List<Artifact>();
         static private float _energy_capacity = 1000.0f;
         static private float _energy_stored = 1000.0f;
         static private float _storage_capacity = 10000.0f;
@@ -104,6 +105,11 @@ namespace LastStar
                 _tech_stored.Add(t);
             }
             return good;
+        }
+        public bool RequestStorage(Artifact a)
+        {
+            _artf_stored.Add(a);
+            return true;
         }
 
         void Start()

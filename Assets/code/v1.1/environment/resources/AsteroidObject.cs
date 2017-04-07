@@ -15,6 +15,10 @@ namespace LastStar
                 Destroy(gameObject);
                 return;
             }
+            Bounds bound = mf.mesh.bounds;
+            SphereCollider collid = GetComponent<SphereCollider>();
+            collid.radius = bound.extents.magnitude;
+            collid.center = bound.center;
         }
     }
 }

@@ -6,10 +6,12 @@ namespace LastStar
 {
     public class RotationOverTime : MonoBehaviour
     {
+        public Vector3 Axis = Vector3.up;
         public float Speed;
+
         void Update()
         {
-            transform.rotation = transform.rotation * Quaternion.AngleAxis(Speed * Time.deltaTime, Vector3.up);
+            transform.localRotation = transform.localRotation * Quaternion.AngleAxis(Speed * Time.deltaTime, Axis);
         }
     }
 }

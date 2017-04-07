@@ -6,18 +6,24 @@ namespace LastStar
 {
     public class ScrollTexture : MonoBehaviour
     {
-        public Vector2 Rate;
+        public Vector2[] Rate;
+        public string[] TextureNames;
+
         private Renderer _source;
-        private Vector2 _total;
+        private Vector2[] _total;
+
         private void Start()
         {
             _source = GetComponent<Renderer>();
+            _total = new Vector2[Rate.Length];
         }
         private void Update()
         {
-            _source.material.SetTextureOffset("_Normal1", _total);
-            _source.material.SetTextureOffset("_Normal2", _total);
-            _total += Rate * Time.deltaTime;
+            for (int i = 0; i < TextureNames.Length; i++)
+            {
+                _source.material.SetTextureOffset(TextureNames[i], _total[i]);
+                _total[i] += Rate[i] * Time.deltaTime;
+            }
         }
     }
 }
