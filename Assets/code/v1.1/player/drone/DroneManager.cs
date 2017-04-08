@@ -9,12 +9,16 @@ namespace LastStar
         public int DockedDrones;
         public GameObject DronePrefab;
 
+        private int _max_drones;
+
         private List<DroneTask> _tasks;
         private Dictionary<DroneAI, DroneTask> _drone_to_task;
         private Dictionary<DroneTask, DroneAI> _task_to_drone;
 
         private ArtifactScreen _artf_screen;
         private ResourceManager _resources;
+
+        private DroneUIBinding[] _bindings;
 
         public void QueueDroneTask(DroneTask task)
         {
@@ -65,9 +69,13 @@ namespace LastStar
             _tasks = new List<DroneTask>();
             _drone_to_task = new Dictionary<DroneAI, DroneTask>();
             _task_to_drone = new Dictionary<DroneTask, DroneAI>();
+
+            _max_drones = DockedDrones;
+
+            _bindings = FindObjectsOfType<DroneUIBinding>();
         }
         private void Update()
-        {   
+        {
             if ( _tasks.Count > 0 && DockedDrones > 0 )
             {
                 GameObject go = Instantiate(DronePrefab);
@@ -83,6 +91,12 @@ namespace LastStar
                 _task_to_drone[ai.Task] = ai;
 
                 DockedDrones--;
+            }
+
+            foreach(DroneUIBinding bind in _bindings)
+            {
+                bind.availableDrones = DockedDrones;
+                bind.maxDrones = _max_drones;
             }
         }
 
