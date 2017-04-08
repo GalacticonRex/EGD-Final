@@ -33,9 +33,9 @@ namespace LastStar
         // Update is called once per frame
         void Update()
         {
-            if (_last_recorded != _camera.interpolation)
+            if (_last_recorded != _camera.PlayerScanner.value)
             {
-                _last_recorded = _camera.interpolation;
+                _last_recorded = _camera.PlayerScanner.value;
                 float distance = 1.0f - Mathf.Abs(TargetValue - _last_recorded);
                 for (int i = 0; i < _affected.Length; i++)
                 {

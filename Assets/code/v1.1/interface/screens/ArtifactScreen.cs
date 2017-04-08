@@ -67,8 +67,9 @@ namespace LastStar
         private void Update()
         {
             if (_menus.CurrentMenu != InterfaceMenu.MenuType.ArtifactViewing)
-                Time.timeScale = 0.0f;
+                return;
 
+            Time.timeScale = 0.0f;
             if (Input.GetKeyDown(KeyCode.Space) && _process != null)
             {
                 TextTarget.text = _target_data;

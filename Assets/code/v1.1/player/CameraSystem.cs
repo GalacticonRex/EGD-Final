@@ -29,35 +29,32 @@ namespace LastStar
                 _target_additional_fov = value;
             }
         }
-        public float ratio
-        {
-            get
-            {
-                return _camera_lerp * _camera_scanner.ratio + (1.0f - _camera_lerp) * _camera_back_view.ratio;
-            }
-        }
         public float interpolation
         {
             get
             {
-                return _camera_lerp;
+                return 1.0f - PlayerScanner.value;
+            }
+        }
+        public float ratio
+        {
+            get
+            {
+                return _arm_length;
             }
         }
         public bool scanMode
         {
-            get { return _isometric_mode; }
+            get { return _target_index == _dereference[PlayerScanner]; }
             set
             {
-                _isometric_mode = value;
-                if ( _isometric_mode )
+                if (value)
                 {
-                    _camera_back_view.active = false;
-                    _camera_scanner.active = true;
+                    SetTargetIndex(PlayerScanner);
                 }
-                else
+                else if (_target_index == _dereference[PlayerScanner])
                 {
-                    _camera_back_view.active = true;
-                    _camera_scanner.active = false;
+                    SetTargetIndex(PlayerRear);
                 }
             }
         }
@@ -71,79 +68,130 @@ namespace LastStar
         }
         #endregion
 
+        public float TransitionRate = 0.05f;
         public Light ScannerIlluminator;
+        public CameraBackView PlayerRear;
+        public CameraScanner PlayerScanner;
 
         #region Private Attributes
         private InterfaceMenu _menus;
         private Camera _player_camera;
 
-        private float _camera_lerp;
-
-        private CameraScanner _camera_scanner;
-        private CameraBackView _camera_back_view;
+        private CameraView[] _camera_views;
+        private Dictionary<CameraView, int> _dereference;
+        private int _target_index;
+        private float _arm_length;
 
         private Vector2 _last_mouse_pos;
 
         private float _actual_additional_fov;
         private float _target_additional_fov;
-
-        private bool _isometric_mode;
         #endregion
 
-        void Start()
+        public void SetTargetIndex(CameraView v)
+        {
+            _target_index = _dereference[v];
+            for (int i=0;i<_camera_views.Length;i++ )
+            {
+                if (i == _target_index)
+                    _camera_views[i].active = true;
+                else
+                    _camera_views[i].active = false;
+            }
+            Debug.Log("Target : " + _target_index.ToString());
+        }
+        private void NormalizeValues()
+        {
+            float total = 0.0f;
+            foreach(CameraView cam in _camera_views)
+            {
+                total += cam.value;
+            }
+            foreach (CameraView cam in _camera_views)
+            {
+                cam.value = cam.value / total;
+            }
+        }
+        private Quaternion MixCameras(CameraView a, CameraView b)
+        {
+            float total = a.value + b.value;
+            return Quaternion.Lerp(a.rotation, b.rotation, b.value / total);
+        }
+        private void UpdateValues()
+        {
+            CameraView cam = _camera_views[_target_index];
+
+            cam.value += TransitionRate;
+            NormalizeValues();
+
+            float fov = 0.0f;
+            _arm_length = 0.0f;
+            Vector3 pos = new Vector3();
+            Quaternion rot = new Quaternion(0, 0, 0, 1);
+
+            foreach (CameraView item in _camera_views)
+            {
+                fov += item.fieldOfView * item.value;
+                _arm_length += item.cameraDistance * item.value;
+                pos += item.transform.position * item.value;
+                rot = Quaternion.Lerp(rot, item.rotation, item.value);
+            }
+                
+            _player_camera.fieldOfView = fov;
+            _player_camera.transform.rotation = rot;
+            _player_camera.transform.position = pos + _player_camera.transform.rotation * new Vector3(0, 0, -_arm_length);
+        }
+
+        private void Start()
         {
             _menus = FindObjectOfType<InterfaceMenu>();
 
+            _camera_views = FindObjectsOfType<CameraView>();
+            _dereference = new Dictionary<CameraView, int>();
+            for (int i = 0; i < _camera_views.Length; i++)
+            {
+                _dereference[_camera_views[i]] = i;
+            }
+
+            _target_index = _dereference[PlayerRear];
+
+            foreach( CameraView v in _camera_views )
+            {
+                if (v == PlayerRear)
+                {
+                    v.active = true;
+                    v.value = 1.0f;
+                }
+                else
+                {
+                    v.active = false;
+                    v.value = 0.0f;
+                }
+            }
+
             _player_camera = GetComponentInChildren<Camera>();
-            _camera_scanner = GetComponentInChildren<CameraScanner>();
-            _camera_back_view = GetComponentInChildren<CameraBackView>();
 
             _last_mouse_pos = Input.mousePosition;
-
-            _isometric_mode = false;
-
-            _camera_lerp = 1.0f;
-
-            _camera_back_view.active = true;
-            _camera_scanner.active = false;
 
             _actual_additional_fov = 0.0f;
             _target_additional_fov = 0.0f;
         }
 
-        void Update()
+        private void Update()
         {
-            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular)
+            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular &&
+                _menus.CurrentMenu != InterfaceMenu.MenuType.Docking)
                 return;
 
             Vector2 mouseMove = mouseDelta;
 
-            if (_isometric_mode)
-            {
-                if (_camera_lerp > 0.0f)
-                {
-                    _camera_lerp -= 0.05f;
-                }
-            }
-            else
-            {
-                if (_camera_lerp < 1.0f)
-                {
-                    _camera_lerp += 0.05f;
-                }
-            }
-
             _actual_additional_fov = _target_additional_fov * 0.1f + _actual_additional_fov * 0.9f;
 
-            _player_camera.fieldOfView = (_camera_scanner.fieldOfView) * (1 - _camera_lerp) + (_camera_back_view.fieldOfView + _actual_additional_fov) * _camera_lerp;
-            _player_camera.transform.rotation = Quaternion.Lerp(_camera_scanner.rotation, _camera_back_view.rotation, _camera_lerp);
-
-            float arm = (_camera_lerp) * _camera_back_view.cameraDistance + (1 - _camera_lerp) * _camera_scanner.cameraDistance;
-            _player_camera.transform.position = transform.position + _player_camera.transform.rotation * new Vector3(0, 0, -arm);
+            UpdateValues();
         }
         private void LateUpdate()
         {
-            ScannerIlluminator.intensity = 1.0f - _camera_lerp;
+            ScannerIlluminator.intensity = PlayerScanner.value;
             _last_mouse_pos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
     }

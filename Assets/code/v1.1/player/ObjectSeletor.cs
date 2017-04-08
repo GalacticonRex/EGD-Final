@@ -45,10 +45,10 @@ namespace LastStar
 
         void Update()
         {
-            Scanner.transform.localScale = new Vector3(2 * MaxDistance, 0.1f, 2 * MaxDistance);
+            Scanner.transform.localScale = new Vector3(2 * MaxDistance, 2 * MaxDistance, 2 * MaxDistance);
             Color color = Scanner.GetComponent<Renderer>().material.color;
             color.a = 0.1f * (1.0f - _camera.interpolation);
-            Scanner.GetComponent<Renderer>().enabled = (_camera.interpolation != 1);
+            Scanner.GetComponent<Renderer>().enabled = (_camera.interpolation < 0.9f);
             Scanner.GetComponent<Renderer>().material.color = color;
 
             _currently_hovered = null;

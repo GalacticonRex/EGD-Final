@@ -11,8 +11,10 @@
 		_Emission("Emission", 2D) = "black" {}
 	}
 	SubShader {
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Transparent" }
 		LOD 200
+		Cull Off
+		ZWrite Off
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
@@ -44,7 +46,6 @@
 			// Metallic and smoothness come from slider variables
 			o.Normal = UnpackNormal(tex2D(_Albedo, IN.uv_MainTex));
 			o.Metallic = tex2D(_Metallic, IN.uv_MainTex) * _Mode;
-			//o.Emission = tex2D(_Emission, IN.uv_MainTex) * _Mode;
 
 			o.Smoothness = _Glossiness * _Mode;
 			o.Alpha = c.a;

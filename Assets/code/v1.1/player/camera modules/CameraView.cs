@@ -8,6 +8,8 @@ namespace LastStar {
 
         protected bool _active = true;
 
+        protected float _value;
+
         protected CameraSystem _camera_system;
 
         protected float _target_camera_distance;
@@ -21,6 +23,11 @@ namespace LastStar {
 
         protected Quaternion _actual_rotation = new Quaternion(0,0,0,1);
 
+        public float value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
         public bool active
         {
             get { return _active; }
@@ -67,7 +74,7 @@ namespace LastStar {
 
         protected void Start()
         {
-            _camera_system = GetComponentInParent<CameraSystem>();
+            _camera_system = FindObjectOfType<CameraSystem>();
             OnStart();
             _actual_fov = CalculateFOVFromDistance();
         }

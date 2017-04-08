@@ -57,8 +57,8 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if ( _base != null && b == _base )
             {
-                _menus.GoTo(InterfaceMenu.MenuType.Docking);
-                _docked = true;
+                PrimaryScreen p = _menus.RegularMenu.GetComponent<PrimaryScreen>();
+                p.AllowDocking();
             }
         }
         private void OnTriggerExit(Collider other)
@@ -66,8 +66,8 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if (_base != null && b == _base)
             {
-                _menus.GoTo(InterfaceMenu.MenuType.Regular);
-                _docked = false;
+                PrimaryScreen p = _menus.RegularMenu.GetComponent<PrimaryScreen>();
+                p.DisallowDocking();
             }
         }
 
@@ -92,9 +92,13 @@ namespace LastStar
             {
                 _camera.scanMode = !_camera.scanMode;
                 if (_camera.scanMode)
+                {
                     _internal_time_scale = 0.0f;
+                }
                 else
+                {
                     _internal_time_scale = 1.0f;
+                };
             }
             Time.timeScale = _internal_time_scale;
         }
