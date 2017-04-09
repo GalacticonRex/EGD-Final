@@ -20,6 +20,11 @@ namespace LastStar
 
         private DroneUIBinding[] _bindings;
 
+        public void BuildDrone()
+        {
+            DockedDrones++;
+            _max_drones++;
+        }
         public void QueueDroneTask(DroneTask task)
         {
             DroneTaskManager mngr = task.GetComponent<DroneTaskManager>();

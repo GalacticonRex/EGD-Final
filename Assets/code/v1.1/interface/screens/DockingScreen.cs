@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class DockingScreen : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public GameObject Construction;
+
+	public void ShowConstructionMenu()
+    {
+        Construction.SetActive(true);
+    }
+
+    private void Start()
+    {
+        Construction.SetActive(false);
+    }
 }
