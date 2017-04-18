@@ -1,0 +1,19 @@
+description Two civs are friendly and one starts a conflict
+priority 100
+
+civ zerg
+civ bob
+
+require
+	zerg(greedy)
+	not bob(tough)
+	zerg -> bob (friendly)
+	bob -> zerg (friendly)
+	
+result 9
+	zerg -> bob (hostile)
+	bob -> zerg (fearful)
+	
+result 2
+	zerg -> bob (killed)
+	bob(dead)

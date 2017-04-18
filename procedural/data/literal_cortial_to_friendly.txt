@@ -1,0 +1,3 @@
+event cordial_to_friendly
+name Describe [pnoun 0] and [pnoun 1]
+Civilizations [pnoun 0] and [pnoun 1], after a long and prosperous relationship, declare themselves allies.

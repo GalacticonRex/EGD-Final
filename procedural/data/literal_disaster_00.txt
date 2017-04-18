@@ -1,0 +1,3 @@
+event disaster
+name [pnoun 0]'s Demise...
+The [pnoun 0] are destroyed in a galactic scale disaster.

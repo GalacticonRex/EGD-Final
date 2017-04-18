@@ -6,7 +6,6 @@ namespace LastStar {
     public class ConstructionMenu : MonoBehaviour {
 
         public UnityEngine.UI.Text Description;
-
         public UnityEngine.UI.Text OreCost;
         public GameObject InsufficientOreBar;
 
@@ -24,13 +23,23 @@ namespace LastStar {
             {
                 Description.text = button.Description;
                 OreCost.text = button.OreCost.ToString();
-                InsufficientOreBar.SetActive((button.OreCost <= _manager.Resources().OreStored()));
+                bool enough = button.OreCost <= _manager.Resources().OreStored();
+                print(button.OreCost.ToString() + " <= " + _manager.Resources().OreStored() + " ==> " + enough.ToString());
+                InsufficientOreBar.SetActive(!enough);
             }
 
         }
         public void ButtonPress(ConstructionButton button)
         {
-            
+            bool enough = button.OreCost <= _manager.Resources().OreStored();
+
+            bool valid = enough;
+            if ( valid )
+            {
+                _manager.Resources().AddOre(-button.OreCost);
+                button.OnClick.Invoke();
+                ButtonHover(button);
+            }
         }
 
         private void Start()

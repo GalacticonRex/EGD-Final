@@ -16,6 +16,10 @@ namespace LastStar
         {
             Application.Quit();
         }
+        public void ArtifactTest()
+        {
+            SceneManager.LoadScene("dialogue_test");
+        }
 
     }
 }

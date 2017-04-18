@@ -1,0 +1,8 @@
+event betrayal
+name Journal Entry
+Dear Journal,
+My therapist said that I should keep a mood journal. Write things that are bothering me to help out with my anxiety. I think it’s kind of stupid. I haven’t written in a journal or a diary since I was 13. I don’t really know what to say. I’m okay right now, I think? A little worried about classes. And my vacation plans got cancelled.
+Mom was gonna take us to [pnoun 0] for my birthday, but what with everything that’s been going on there and the [event 0], we’ve had to cancel. Mom keeps telling my aunt and cousins to move  over here. She’s afraid things will get worse, that we might go to war with them even. 
+But that’s crazy. [pnoun 0] and [pnoun 1] have always been allies. [pnoun 1]’s like [pnoun 0]’s little brother. That would be insane, right? But anything’s possible, and there’s already been so much tension between us.
+Oh God, we’re going to go to war. We have to get my aunt out of there. What’s going to happen to them? Will [pnoun 0] let them come to [pnoun 1]? Oh God, they’re going to die.
+I- we’ll figure it out. I can’t control this right now. We’ve got time. We’ll figure it out.  

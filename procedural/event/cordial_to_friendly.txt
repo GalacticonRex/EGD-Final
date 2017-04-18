@@ -1,0 +1,13 @@
+description Two civs become closer
+priority 10
+
+civ A
+civ B
+
+require
+	A->B(cordial)
+	B->A(cordial)
+	
+result 1
+	A->B(friendly)
+	B->A(friendly)

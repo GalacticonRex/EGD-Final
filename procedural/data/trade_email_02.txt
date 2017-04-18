@@ -1,0 +1,3 @@
+event trade
+name [pnoun 1] E-Mail
+We have recently discovered a...cute little civilization up near [pnoun 999]. They call themselves [pnoun 0]. They’re a primitive civilization. Young, kind of stupid. They don’t even have [noun] yet, but they do have lots and lots of [noun 0]. I don’t even think they know what they’re sitting on. I think it might be time to pay them a visit. Create a trade policy. Definitely before [noun 2] catches on.

@@ -27,7 +27,7 @@ namespace LastStar
     public class ArtifactObject : MonoBehaviour
     {
         public string Name;
-        public TextAsset Source;
+        public string Source;
         public bool Extracting;
 
         private CameraSystem _player;
@@ -79,7 +79,7 @@ namespace LastStar
             if (_renderer == null || _collider == null)
                 Destroy(this);
 
-            _artf = new Artifact(Name, Source.text);
+            _artf = new Artifact(Name, Source);
         }
 
     }

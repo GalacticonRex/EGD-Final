@@ -7,6 +7,7 @@ namespace LastStar {
 
         public string Description;
         public float OreCost;
+        public UnityEngine.Events.UnityEvent OnClick;
 
         private ConstructionMenu _menu;
 
@@ -17,6 +18,10 @@ namespace LastStar {
         public void OnLeave()
         {
             _menu.ButtonHover(null);
+        }
+        public void OnPress()
+        {
+            _menu.ButtonPress(this);
         }
 
         private void Start()

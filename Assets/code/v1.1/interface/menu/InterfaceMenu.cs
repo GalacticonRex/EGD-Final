@@ -78,6 +78,7 @@ namespace LastStar
             {
                 ArtifactViewingMenu.Hide();
                 ArtifactViewingMenu.OnCreate.Invoke();
+                ArtifactViewingMenu.GetComponent<ArtifactScreen>().Init();
             }
         }
     }

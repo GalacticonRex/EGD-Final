@@ -1,0 +1,3 @@
+event betrayal
+name Headline from [pnoun 0] Source
+Headline: Stocks Plummet As [pnoun 0] [org gov] Reveals [pnoun 1] Was Responsible for [event 0 misc]

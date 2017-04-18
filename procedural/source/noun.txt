@@ -1,0 +1,12 @@
+dungeon | bad, place
+death ray | bad, weapon
+planet killer | bad, weapon
+
+temple | good, place
+university | good, place
+sanctuary | good, place
+
+asteroid belt | neutral, place
+factory | neutral, place
+planet | neutral, place
+

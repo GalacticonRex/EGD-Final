@@ -1,0 +1,3 @@
+event fearful_to_apathetic
+name Describe [pnoun 0] and [pnoun 1]
+Civilizations [pnoun 0] and [pnoun 1] go from being fearful of each other to being more or less neutral.

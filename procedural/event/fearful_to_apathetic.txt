@@ -1,0 +1,13 @@
+description Two civs become closer
+priority 10
+
+civ A
+civ B
+
+require
+	A->B(fearful)
+	B->A(fearful)
+	
+result 1
+	A->B(apathetic)
+	B->A(apathetic)

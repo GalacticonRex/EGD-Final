@@ -8,7 +8,7 @@ public class DockingScreen : MonoBehaviour {
 
 	public void ShowConstructionMenu()
     {
-        Construction.SetActive(true);
+        Construction.SetActive(!Construction.activeInHierarchy);
     }
 
     private void Start()

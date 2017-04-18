@@ -1,0 +1,7 @@
+description A civilization is destroyed by a disaster
+priority 5
+
+civ A
+
+result 1
+	A(dead)

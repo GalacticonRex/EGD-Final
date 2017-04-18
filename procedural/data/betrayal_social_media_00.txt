@@ -1,0 +1,3 @@
+event betrayal
+name [pnoun 1] Social Media Post
+Am I the only one who thinks the [pnoun 0] had it coming? I mean they were the ones who committed the fucking war crime! We just leaked the information. I don’t understand why everyone’s treating [pnoun 0] like a fucking child who skinned their knee, and we’re being persecuted when they’re actions killed like a fuckton of civilians. Why are we acting like we got our hand stuck in the cookie jar? I’m proud of [pnoun 1]. We actually had the balls to do something about it. Fuck the alliance, man! This was the right thing to do.

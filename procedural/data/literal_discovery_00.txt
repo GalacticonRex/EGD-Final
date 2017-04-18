@@ -1,0 +1,3 @@
+event discovery
+name [pnoun 0] and [pnoun 1] discover each other.
+Civilizations [pnoun 0] and [pnoun 1] discover each other, ending a long period of no contact.

@@ -1,0 +1,3 @@
+event apathetic_to_cordial
+name Describe [pnoun 0] and [pnoun 1]
+Civilizations [pnoun 0] and [pnoun 1] grow closer after a long period of apathy and disinterest.

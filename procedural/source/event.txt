@@ -1,0 +1,6 @@
+War | war
+Conflict | war
+
+Treaty | peace
+
+Plague | misc

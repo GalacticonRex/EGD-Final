@@ -1,0 +1,13 @@
+description Two civs discover each other and begin trading
+priority 10
+
+civ zerg
+civ bob
+
+require
+	not zerg -> bob
+	not bob -> zerg
+	
+result 1
+	zerg -> bob (cordial)
+	bob -> zerg (cordial)

@@ -1,0 +1,13 @@
+description Two civs discover each other and are cautious
+priority 10
+
+civ zerg
+civ bob
+
+require
+	not zerg -> bob
+	not bob -> zerg
+	
+result 1
+	zerg -> bob (fearful)
+	bob -> zerg (fearful)

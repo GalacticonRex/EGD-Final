@@ -1,0 +1,9 @@
+Senate | gov
+Royal Council | gov
+
+Mining Company | ind
+Ore Smelter | ind
+
+Armada | mil
+Fleet | mil
+Corps | mil

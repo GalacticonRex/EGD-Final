@@ -32,13 +32,14 @@ namespace LastStar
         protected override void OnUpdate()
         {
             Vector2 mouseMove = _camera_system.mouseDelta;
-            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            float axis = Input.GetAxis("Mouse ScrollWheel");
+            if (axis > 0)
             {
-                _target_camera_distance = Mathf.Max(MinDistance, _target_camera_distance * 0.9f);
+                _target_camera_distance = Mathf.Max(MinDistance, _target_camera_distance * 0.8f);
             }
-            else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            else if (axis < 0)
             {
-                _target_camera_distance = Mathf.Min(MaxDistance, _target_camera_distance * 1.1f);
+                _target_camera_distance = Mathf.Min(MaxDistance, _target_camera_distance * 1.3f);
             }
             if (Input.GetMouseButton(1))
             {

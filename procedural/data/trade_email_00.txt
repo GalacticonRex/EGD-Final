@@ -1,0 +1,3 @@
+event trade
+name [pnoun 1] E-Mail
+We have recently discovered a new civilization up near [pnoun 999]: the [pnoun 0]. They have an abundance of [noun 0]. Their technology is horrendous so trade should be easy. I believe it would be wise to do so. 

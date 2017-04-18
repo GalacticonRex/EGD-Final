@@ -1,0 +1,5 @@
+friendly
+cordial
+apathetic
+fearful
+hostile
