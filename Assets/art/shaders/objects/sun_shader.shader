@@ -34,6 +34,7 @@
 				float2 uv2 : TEXCOORD1;
 				float2 normal : NORMAL;
 				float4 vertex : SV_POSITION;
+				float3 viewDir : TEXCOORD2;
 			};
 
 			sampler2D _MainTex;
@@ -44,9 +45,10 @@
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.normal = v.normal;
+				o.normal = normalize(v.normal);
 				o.uv1 = v.uv1 * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv2 = v.uv2 * _MainTex_ST.xy + _MainTex_ST.zw;
+				o.viewDir = normalize(WorldSpaceViewDir(v.vertex));
 				return o;
 			}
 			
@@ -54,7 +56,10 @@
 			{
 				float4 color1 = tex2D(_MainTex, i.uv1) * float4(1.0, 1.0, 1.0, 0.0);
 				float4 color2 = tex2D(_MainTex, i.uv2) * float4(0.8, 0.8, 0.8, 0.0);
-				return _BaseColor + color1 - color2;
+
+				//float angle = clamp(acos(dot(i.normal, -i.viewDir)),0,1);
+
+				return _BaseColor + color1 - color2;// +float4(0.1, 0.0, 0.0, 0.0) * angle;
 			}
 			ENDCG
 		}

@@ -8,7 +8,8 @@ namespace LastStar {
         private InterfaceMenu _menus;
         private Player _player;
         private BaseResources _resources;
-        private CameraScanner _camera;
+        public CameraScanner StationCamera;
+        public float TransitionRate = 2.0f;
 
         public BaseResources Resources()
         {
@@ -16,18 +17,17 @@ namespace LastStar {
         }
         public void Dock()
         {
-            _player.cameraSystem.SetTargetIndex(_camera);
+            _player.cameraSystem.SetTarget(StationCamera, TransitionRate);
         }
         public void UnDock()
         {
-            _player.cameraSystem.SetTargetIndex(_player.cameraSystem.PlayerRear);
+            _player.cameraSystem.SetTarget(_player.cameraSystem.PlayerRear, TransitionRate);
         }
 
         void Start() {
             _player = FindObjectOfType<Player>();
             _menus = FindObjectOfType<InterfaceMenu>();
             _resources = GetComponent<BaseResources>();
-            _camera = GetComponent<CameraScanner>();
         }
         private void Update()
         {

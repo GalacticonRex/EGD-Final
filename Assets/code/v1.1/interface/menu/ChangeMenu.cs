@@ -4,17 +4,14 @@ using UnityEngine;
 
 namespace LastStar {
     public class ChangeMenu : MonoBehaviour {
-        public InterfaceMenu.MenuType Target = InterfaceMenu.MenuType.Regular;
 
-        private InterfaceMenu _mainmenu;
+        public InterfaceMenu.MenuType Target = InterfaceMenu.MenuType.Regular;
+        public InterfaceMenu MainMenu;
 
         public void OpenMenu()
         {
-            _mainmenu.GoTo(Target);
+            MainMenu.GoTo(Target);
         }
-        private void Start()
-        {
-            _mainmenu = GetComponentInParent<InterfaceMenu>();
-        }
+
     }
 }

@@ -33,28 +33,28 @@ namespace LastStar
         {
             get
             {
-                return 1.0f - PlayerScanner.value;
+                return 1.0f - _scanner_value;
             }
         }
         public float ratio
         {
             get
             {
-                return _arm_length;
+                return _current_arm_length;
             }
         }
         public bool scanMode
         {
-            get { return _target_index == _dereference[PlayerScanner]; }
+            get { return _target == PlayerScanner; }
             set
             {
                 if (value)
                 {
-                    SetTargetIndex(PlayerScanner);
+                    SetTarget(PlayerScanner, RearToScanner);
                 }
-                else if (_target_index == _dereference[PlayerScanner])
+                else if (_target == PlayerScanner)
                 {
-                    SetTargetIndex(PlayerRear);
+                    SetTarget(PlayerRear, ScannerToRear);
                 }
             }
         }
@@ -68,19 +68,35 @@ namespace LastStar
         }
         #endregion
 
-        public float TransitionRate = 0.05f;
         public Light ScannerIlluminator;
+        public CameraView InitialView;
         public CameraBackView PlayerRear;
         public CameraScanner PlayerScanner;
+        public float RearToScanner = 0.5f;
+        public float ScannerToRear = 1.2f;
 
         #region Private Attributes
         private InterfaceMenu _menus;
+        private PilotedNavigator _nav;
         private Camera _player_camera;
 
         private CameraView[] _camera_views;
-        private Dictionary<CameraView, int> _dereference;
-        private int _target_index;
-        private float _arm_length;
+
+        private float _transition_rate;
+
+        private Vector3 _current_position;
+        private Quaternion _current_rotation;
+        private float _current_arm_length;
+        private float _current_fov;
+
+        private Vector3 _source_position;
+        private Quaternion _source_rotation;
+        private float _source_arm_length;
+        private float _source_fov;
+
+        private CameraView _target;
+        private float _view_lerp;
+        private float _scanner_value;
 
         private Vector2 _last_mouse_pos;
 
@@ -88,88 +104,71 @@ namespace LastStar
         private float _target_additional_fov;
         #endregion
 
-        public void SetTargetIndex(CameraView v)
+        public void SetTarget(CameraView v, float trans)
         {
-            _target_index = _dereference[v];
-            for (int i=0;i<_camera_views.Length;i++ )
-            {
-                if (i == _target_index)
-                    _camera_views[i].active = true;
-                else
-                    _camera_views[i].active = false;
-            }
-            Debug.Log("Target : " + _target_index.ToString());
-        }
-        private void NormalizeValues()
-        {
-            float total = 0.0f;
-            foreach(CameraView cam in _camera_views)
-            {
-                total += cam.value;
-            }
-            foreach (CameraView cam in _camera_views)
-            {
-                cam.value = cam.value / total;
-            }
-        }
-        private Quaternion MixCameras(CameraView a, CameraView b)
-        {
-            float total = a.value + b.value;
-            return Quaternion.Lerp(a.rotation, b.rotation, b.value / total);
+            print("Set target to " + v.name);
+
+            _transition_rate = trans;
+            _source_position = _current_position;
+            _source_rotation = _current_rotation;
+            _source_arm_length = _current_arm_length;
+            _source_fov = _current_fov;
+
+            _target = v;
+            _view_lerp = 0.0f;
+
+            if (v != PlayerRear)
+                _nav.Block(this);
+            else
+                _nav.Unblock(this);
+
         }
         private void UpdateValues()
         {
-            CameraView cam = _camera_views[_target_index];
+            _current_fov = _target.fieldOfView * _view_lerp + _source_fov * (1.0f - _view_lerp);
+            _current_arm_length = _target.cameraDistance * _view_lerp + _source_arm_length * (1.0f - _view_lerp);
+            _current_rotation = Quaternion.Lerp(_source_rotation, _target.rotation, _view_lerp);
+            _current_position = Vector3.Lerp(_source_position, _target.transform.position, _view_lerp);
 
-            cam.value += TransitionRate;
-            NormalizeValues();
+            _player_camera.fieldOfView = _current_fov + _actual_additional_fov;
+            _player_camera.transform.rotation = _current_rotation;
+            _player_camera.transform.position = _current_position + _current_rotation * new Vector3(0,0, 0.25f * _actual_additional_fov - _current_arm_length);
 
-            float fov = 0.0f;
-            _arm_length = 0.0f;
-            Vector3 pos = new Vector3();
-            Quaternion rot = new Quaternion(0, 0, 0, 1);
-
-            foreach (CameraView item in _camera_views)
+            _view_lerp = Mathf.Min(1.0f, _view_lerp + Time.unscaledDeltaTime / _transition_rate);
+            if ( _target == PlayerScanner )
             {
-                fov += item.fieldOfView * item.value;
-                _arm_length += item.cameraDistance * item.value;
-                pos += item.transform.position * item.value;
-                rot = Quaternion.Lerp(rot, item.rotation, item.value);
+                _scanner_value = Mathf.Min(1.0f, _scanner_value + Time.unscaledDeltaTime / _transition_rate);
             }
-                
-            _player_camera.fieldOfView = fov;
-            _player_camera.transform.rotation = rot;
-            _player_camera.transform.position = pos + _player_camera.transform.rotation * new Vector3(0, 0, -_arm_length);
+            else
+            {
+                _scanner_value = Mathf.Max(0.0f, _scanner_value - Time.unscaledDeltaTime / _transition_rate);
+            }
         }
 
         private void Start()
         {
+            _nav = FindObjectOfType<PilotedNavigator>();
             _menus = FindObjectOfType<InterfaceMenu>();
 
             _camera_views = FindObjectsOfType<CameraView>();
-            _dereference = new Dictionary<CameraView, int>();
-            for (int i = 0; i < _camera_views.Length; i++)
-            {
-                _dereference[_camera_views[i]] = i;
-            }
-
-            _target_index = _dereference[PlayerRear];
-
-            foreach( CameraView v in _camera_views )
-            {
-                if (v == PlayerRear)
-                {
-                    v.active = true;
-                    v.value = 1.0f;
-                }
-                else
-                {
-                    v.active = false;
-                    v.value = 0.0f;
-                }
-            }
-
             _player_camera = GetComponentInChildren<Camera>();
+
+            _target = InitialView;
+            _view_lerp = 0.0f;
+
+            if (_target != PlayerRear)
+                _nav.Block(this);
+            else
+                _nav.Unblock(this);
+
+            _source_fov = _current_fov = _target.fieldOfView;
+            _source_arm_length = _current_arm_length = _target.cameraDistance;
+            _source_rotation = _current_rotation = _target.rotation;
+            _source_position = _current_position = _target.transform.position;
+
+            _player_camera.fieldOfView = _current_fov + _actual_additional_fov;
+            _player_camera.transform.rotation = _current_rotation;
+            _player_camera.transform.position = _current_position + _current_rotation * new Vector3(0, 0, 0.25f * _actual_additional_fov - _current_arm_length);
 
             _last_mouse_pos = Input.mousePosition;
 
@@ -179,10 +178,6 @@ namespace LastStar
 
         private void Update()
         {
-            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular &&
-                _menus.CurrentMenu != InterfaceMenu.MenuType.Docking)
-                return;
-
             Vector2 mouseMove = mouseDelta;
 
             _actual_additional_fov = _target_additional_fov * 0.1f + _actual_additional_fov * 0.9f;
@@ -191,7 +186,7 @@ namespace LastStar
         }
         private void LateUpdate()
         {
-            ScannerIlluminator.intensity = PlayerScanner.value;
+            ScannerIlluminator.intensity = _scanner_value;
             _last_mouse_pos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
     }

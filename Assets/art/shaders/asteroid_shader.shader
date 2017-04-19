@@ -7,6 +7,7 @@
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_BumpMap("Normal Map", 2D) = "bump" {}
 		_Metallic ("Metallic", 2D) = "black" {}
+		_Glowing("Glow Map", 2D) = "black" {}
 		_Glossiness("Smoothness", Range(0,1)) = 0.5
 	}
 	SubShader {
@@ -23,6 +24,7 @@
 		sampler2D _MainTex;
 		sampler2D _BumpMap;
 		sampler2D _Metallic;
+		sampler2D _Glowing;
 
 		struct Input {
 			float2 uv_MainTex;
@@ -40,6 +42,7 @@
 			o.Metallic = tex2D(_MainTex, IN.uv_MainTex).r * _Mode;
 			o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
 			o.Smoothness = tex2D(_MainTex, IN.uv_MainTex).r * _Mode;
+			o.Emission = o.Albedo * tex2D(_Glowing, IN.uv_MainTex) * _Mode;
 			o.Alpha = c.a;
 		}
 		ENDCG

@@ -6,10 +6,6 @@ namespace LastStar {
     public abstract class CameraView : MonoBehaviour {
         public float AdjustRate = 0.5f;
 
-        protected bool _active = true;
-
-        protected float _value;
-
         protected CameraSystem _camera_system;
 
         protected float _target_camera_distance;
@@ -23,16 +19,6 @@ namespace LastStar {
 
         protected Quaternion _actual_rotation = new Quaternion(0,0,0,1);
 
-        public float value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        public bool active
-        {
-            get { return _active; }
-            set { _active = value; }
-        }
         public float fieldOfView
         {
             get { return _actual_fov; }
@@ -57,7 +43,7 @@ namespace LastStar {
             get { return _actual_rotation; }
         }
 
-        protected Quaternion CalculateRotaionFromAngles()
+        protected Quaternion CalculateRotationFromAngles()
         {
             return Quaternion.AngleAxis(_actual_rot_x, Vector3.up) *
                     Quaternion.AngleAxis(_actual_rot_y, Vector3.right);
@@ -72,7 +58,7 @@ namespace LastStar {
         protected abstract void OnStart();
         protected abstract void OnUpdate();
 
-        protected void Start()
+        protected void Awake()
         {
             _camera_system = FindObjectOfType<CameraSystem>();
             OnStart();
@@ -80,8 +66,7 @@ namespace LastStar {
         }
         protected void Update()
         {
-            if ( _active )
-                OnUpdate();
+            OnUpdate();
 
             _actual_camera_distance = (1-AdjustRate) * _actual_camera_distance + AdjustRate * _target_camera_distance;
 

@@ -8,15 +8,19 @@ namespace LastStar
     {
         public enum MenuType
         {
-            Regular,
-            Docking,
-            TechRecombination,
-            ArtifactViewing
+            None = 0x0,
+            Regular = 0x1,
+            Docking = 0x2,
+            TechRecombination = 0x4,
+            ArtifactViewing = 0x8,
+            LetterBoxView = 0x10,
+            UIMenu = 0xE
         }
         public InterfaceElem RegularMenu;
         public InterfaceElem DockingMenu;
         public InterfaceElem TechRecombinationMenu;
         public InterfaceElem ArtifactViewingMenu;
+        public InterfaceElem LetterBoxMenu;
 
         private MenuType _current_menu;
         private InterfaceElem _current;
@@ -26,6 +30,11 @@ namespace LastStar
         public MenuType CurrentMenu
         {
             get { return _current_menu; }
+        }
+        public bool test(MenuType bitfield)
+        {
+            MenuType bitand = _current_menu & bitfield;
+            return bitand != MenuType.None;
         }
 
         public void GoTo(MenuType menu)
@@ -44,6 +53,9 @@ namespace LastStar
                     break;
                 case MenuType.ArtifactViewing:
                     _current = ArtifactViewingMenu;
+                    break;
+                case MenuType.LetterBoxView:
+                    _current = LetterBoxMenu;
                     break;
                 default:
                     break;
@@ -78,7 +90,11 @@ namespace LastStar
             {
                 ArtifactViewingMenu.Hide();
                 ArtifactViewingMenu.OnCreate.Invoke();
-                ArtifactViewingMenu.GetComponent<ArtifactScreen>().Init();
+            }
+            if (LetterBoxMenu!=null)
+            {
+                LetterBoxMenu.Hide();
+                LetterBoxMenu.OnCreate.Invoke();
             }
         }
     }

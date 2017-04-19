@@ -32,6 +32,18 @@ namespace LastStar
         private float _time_between;
         private Coroutine _waiting_on_press;
         private Rigidbody _self;
+        private HashSet<object> _blockers = new HashSet<object>();
+
+        public void Block(object obj)
+        {
+            _blockers.Add(obj);
+            print("Block " + _blockers.Count);
+        }
+        public void Unblock(object obj)
+        {
+            _blockers.Remove(obj);
+            print("Unblock " + _blockers.Count);
+        }
 
         private IEnumerator GetTimesPressed()
         {
@@ -57,7 +69,7 @@ namespace LastStar
 
         private void Update()
         {
-            if (_menus.CurrentMenu != InterfaceMenu.MenuType.Regular)
+            if (_blockers.Count > 0)
                 return;
 
             if (Input.GetKey(RollLeft))

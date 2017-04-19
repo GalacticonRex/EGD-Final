@@ -71,7 +71,7 @@ namespace LastStar
             }
             else
             {
-                Debug.Log("HIT!");
+    
                 transform.position = tech.transform.position;
                 transform.localScale = tech.transform.localScale * 5.0f;
                 _renderer.enabled = true;

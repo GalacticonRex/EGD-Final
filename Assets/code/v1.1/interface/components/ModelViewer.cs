@@ -2,43 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModelViewer : MonoBehaviour {
-
-    public GameObject Object;
-    public int Width;
-    public int Height;
-
-    public Texture Result
+namespace LastStar
+{
+    public class ModelViewer : MonoBehaviour
     {
-        get
+
+        public GameObject Object;
+        public int Width;
+        public int Height;
+        public Vector3 Position;
+
+        public Texture Result
         {
-            return _render_texture;
+            get
+            {
+                return _render_texture;
+            }
         }
-    }
-    public Transform CameraTransform
-    {
-        get
+        public Transform CameraTransform
         {
-            return _camera.transform;
+            get
+            {
+                return _camera.transform;
+            }
         }
+
+        private GameObject _instance;
+        private RenderTexture _render_texture;
+        private Camera _camera;
+
+        void Awake()
+        {
+            _render_texture = new RenderTexture(Width, Height, 16);
+
+            _camera = gameObject.GetComponent<Camera>();
+            _camera.targetTexture = _render_texture;
+            _instance = Instantiate(Object);
+
+            int target_layer = LayerMask.NameToLayer("ModelView");
+            Queue<GameObject> instances = new Queue<GameObject>();
+            instances.Enqueue(_instance);
+            while ( instances.Count > 0 )
+            {
+                GameObject go = instances.Dequeue();
+                go.layer = target_layer;
+                foreach(Transform t in go.transform)
+                {
+                    instances.Enqueue(t.gameObject);
+                }
+            }
+
+            _instance.transform.SetParent(transform);
+            _instance.transform.localPosition = new Vector3(0, 0, 10);
+
+            transform.rotation = Quaternion.LookRotation(_instance.transform.localPosition, Vector3.up);
+        }
+
     }
-
-    private GameObject _instance;
-    private RenderTexture _render_texture;
-    private Camera _camera;
-
-	void Awake () {
-        _render_texture = new RenderTexture(Width, Height, 16);
-
-        _camera = gameObject.GetComponent<Camera>();
-        _camera.targetTexture = _render_texture;
-
-        _instance = Instantiate(Object);
-        _instance.layer = _camera.cullingMask;
-        _instance.transform.SetParent(transform);
-        _instance.transform.localPosition = new Vector3(0, 0, 10);
-
-        transform.rotation = Quaternion.LookRotation(_instance.transform.localPosition, Vector3.up);
-    }
-
 }

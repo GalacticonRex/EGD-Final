@@ -7,11 +7,13 @@ namespace LastStar
     public class TextScenario : MonoBehaviour
     {
         public ArtifactScreen Screen;
+        public int MaxLength = 10;
+        public int StartingCivs = 2;
 
         void Start()
         {
             AssetDatabase db = GetComponent<AssetDatabase>();
-            AssetDatabase.UniverseSegment universe = new AssetDatabase.UniverseSegment(db, 2, 10, 10);
+            AssetDatabase.UniverseSegment universe = new AssetDatabase.UniverseSegment(db, StartingCivs, StartingCivs, MaxLength);
             while (universe.NextEra())
             {
                 AssetDatabase.ArtifactOutput ao = universe.CreateArtifact();

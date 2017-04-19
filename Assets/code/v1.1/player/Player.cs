@@ -11,7 +11,7 @@ namespace LastStar
         private ObjectSeletor _selector;
         private ResourceManager _resources;
         private CameraSystem _camera;
-        private Navigator _navigation;
+        private PilotedNavigator _navigation;
         private BaseManager _base;
         private InterfaceMenu _menus;
         private DroneManager _manager;
@@ -35,7 +35,7 @@ namespace LastStar
         {
             get { return _camera; }
         }
-        public Navigator navigator
+        public PilotedNavigator navigator
         {
             get { return _navigation; }
         }
@@ -77,7 +77,7 @@ namespace LastStar
             _selector = GetComponent<ObjectSeletor>();
             _resources = GetComponent<ResourceManager>();
             _camera = GetComponent<CameraSystem>();
-            _navigation = GetComponent<Navigator>();
+            _navigation = GetComponent<PilotedNavigator>();
             _base = FindObjectOfType<BaseManager>();
             _menus = FindObjectOfType<InterfaceMenu>();
             _manager = FindObjectOfType<DroneManager>();

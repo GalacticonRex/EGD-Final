@@ -7,8 +7,8 @@ namespace LastStar
     public class AsteroidCluster : MonoBehaviour
     {
         public GameObject AsteroidSrc;
-
         public GameObject OreDepositSrc;
+
         public float OreProbability = 1.0f;
         public float OreMinimum = 50.0f;
         public float OreMaximum = 1000.0f;

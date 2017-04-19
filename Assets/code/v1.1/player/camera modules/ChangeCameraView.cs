@@ -6,13 +6,14 @@ namespace LastStar {
     public class ChangeCameraView : MonoBehaviour {
 
         public CameraView Target;
+        public float TransitionRate;
         private CameraSystem _system;
 
         public void SetView()
         {
-            _system.SetTargetIndex(Target);
+            _system.SetTarget(Target, TransitionRate);
         }
-        private void Start()
+        private void Awake()
         {
             _system = FindObjectOfType<CameraSystem>();
         }

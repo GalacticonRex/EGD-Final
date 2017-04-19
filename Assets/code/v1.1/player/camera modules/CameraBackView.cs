@@ -31,7 +31,7 @@ namespace LastStar
             _target_rot_x = InitialRotation.x;
             _actual_rot_y = InitialRotation.y;
             _target_rot_y = InitialRotation.y;
-            _local_rotation = CalculateRotaionFromAngles();
+            _local_rotation = CalculateRotationFromAngles();
         }
         protected override void OnUpdate()
         {

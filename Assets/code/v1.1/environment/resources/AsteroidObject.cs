@@ -9,11 +9,15 @@ namespace LastStar
         void Start()
         {
             MeshFilter mf = GetComponent<MeshFilter>();
-            mf.mesh = Asteroids.GetMesh();
-            if (mf.mesh == null)
+            if (mf == null)
             {
-                Destroy(gameObject);
-                return;
+                mf = gameObject.AddComponent<MeshFilter>();
+                mf.mesh = Asteroids.GetMesh();
+                if (mf.mesh == null)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
             }
             Bounds bound = mf.mesh.bounds;
             SphereCollider collid = GetComponent<SphereCollider>();

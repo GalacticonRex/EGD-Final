@@ -46,7 +46,7 @@ namespace LastStar
                 _target_rot_x += mouseMove.x * RotationSensitivity.x;
                 _target_rot_y -= mouseMove.y * RotationSensitivity.y;
             }
-            _actual_rotation = CalculateRotaionFromAngles();
+            _actual_rotation = CalculateRotationFromAngles();
         }
     }
 }
