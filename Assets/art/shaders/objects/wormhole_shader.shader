@@ -37,7 +37,7 @@
 				float2 uv2 : TEXCOORD1;
 				float4 vertex : SV_POSITION;
 				float3 viewDir : NORMAL;
-				float4 color : COLOR;
+				 
 			};
 
 			sampler2D _Normal1;
