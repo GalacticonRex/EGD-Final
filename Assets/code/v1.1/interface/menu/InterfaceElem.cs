@@ -6,6 +6,7 @@ namespace LastStar
 {
     public class InterfaceElem : MonoBehaviour
     {
+        public InterfaceMenu.MenuType Type;
         public UnityEngine.Events.UnityEvent OnCreate;
         public UnityEngine.Events.UnityEvent OnShow;
         public UnityEngine.Events.UnityEvent OnHide;

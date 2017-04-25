@@ -8,6 +8,7 @@ namespace LastStar {
         public string Description;
         public float OreCost;
         public UnityEngine.Events.UnityEvent OnClick;
+        public ModelViewer Source;
 
         private ConstructionMenu _menu;
 

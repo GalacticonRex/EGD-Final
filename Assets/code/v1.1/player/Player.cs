@@ -19,6 +19,10 @@ namespace LastStar
         private bool _docked;
         private float _internal_time_scale = 1.0f;
 
+        public InterfaceMenu menu
+        {
+            get { return _menus; }
+        }
         public InputManager inputs
         {
             get { return _inputs; }
@@ -57,7 +61,7 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if ( _base != null && b == _base )
             {
-                PrimaryScreen p = _menus.RegularMenu.GetComponent<PrimaryScreen>();
+                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponent<PrimaryScreen>();
                 p.AllowDocking();
             }
         }
@@ -66,7 +70,7 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if (_base != null && b == _base)
             {
-                PrimaryScreen p = _menus.RegularMenu.GetComponent<PrimaryScreen>();
+                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponent<PrimaryScreen>();
                 p.DisallowDocking();
             }
         }

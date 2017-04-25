@@ -8,7 +8,7 @@ namespace LastStar {
         private InterfaceMenu _menus;
         private Player _player;
         private BaseResources _resources;
-        public CameraScanner StationCamera;
+        public CameraView StationCamera;
         public float TransitionRate = 2.0f;
 
         public BaseResources Resources()

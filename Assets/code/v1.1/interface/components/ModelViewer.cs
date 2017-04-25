@@ -10,7 +10,8 @@ namespace LastStar
         public GameObject Object;
         public int Width;
         public int Height;
-        public Vector3 Position;
+        public Vector3 Position = new Vector3(0,0,10);
+        public Vector3 Rotation = new Vector3(0,0,0);
 
         public Texture Result
         {
@@ -31,12 +32,13 @@ namespace LastStar
         private RenderTexture _render_texture;
         private Camera _camera;
 
-        void Awake()
+        private void Awake()
         {
             _render_texture = new RenderTexture(Width, Height, 16);
 
             _camera = gameObject.GetComponent<Camera>();
             _camera.targetTexture = _render_texture;
+
             _instance = Instantiate(Object);
 
             int target_layer = LayerMask.NameToLayer("ModelView");
@@ -53,9 +55,13 @@ namespace LastStar
             }
 
             _instance.transform.SetParent(transform);
-            _instance.transform.localPosition = new Vector3(0, 0, 10);
-
-            transform.rotation = Quaternion.LookRotation(_instance.transform.localPosition, Vector3.up);
+            _instance.transform.position = transform.position + Position;
+            _instance.transform.localRotation = Quaternion.Euler(Rotation);
+        }
+        private void Update()
+        {
+            _instance.transform.position = transform.position + Position;
+            _instance.transform.localRotation = Quaternion.Euler(Rotation);
         }
 
     }

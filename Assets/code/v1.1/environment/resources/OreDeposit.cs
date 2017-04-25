@@ -13,6 +13,10 @@ namespace LastStar
         private float _total;
         private CaptionText _cap;
 
+        public void SetAmount(float amt)
+        {
+            _total = amt;
+        }
         public float Remaining()
         {
             return _total;
@@ -54,12 +58,35 @@ namespace LastStar
             drone.AddOre(amount);
         }
 
+        public void ManageCaptionText(GameObject caption_text)
+        {
+            _cap = GetComponent<CaptionText>();
+            if (_cap == null && caption_text != null)
+            {
+                GameObject ore_go = Instantiate(caption_text);
+                ore_go.transform.SetParent(transform);
+                ore_go.transform.localPosition = new Vector3();
+
+                _cap = gameObject.AddComponent<CaptionText>();
+                _cap.Source = ore_go;
+
+                print("Created CAPTION TEXT");
+            }
+            if (_cap != null)
+            {
+                _cap.TextData = "Ore Deposit of " + Mathf.RoundToInt(InitialAmount).ToString();
+                _cap.Radius = 4.0f * transform.localScale.x;
+            }
+        }
+
         private void Start()
         {
             Extracting = false;
+
             _total = InitialAmount;
             _last = _total;
-            _cap = GetComponentInChildren<CaptionText>();
+
+            //ManageCaptionText(null);
         }
         private void Update()
         {

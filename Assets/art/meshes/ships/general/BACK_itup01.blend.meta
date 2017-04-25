@@ -6,9 +6,13 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Back_ItUp01
     400000: //RootNode
+    400002: Back_ItUp01
     2300000: //RootNode
+    2300002: Back_ItUp01
     3300000: //RootNode
+    3300002: Back_ItUp01
     4300000: Back_ItUp01
     7400000: Default Take
     9500000: //RootNode
@@ -22,6 +26,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 

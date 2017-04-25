@@ -11,7 +11,6 @@ namespace LastStar
         public float Radius;
 
         private Player _player;
-        private GameObject _caption;
         private UnityEngine.UI.Image _panel;
         private UnityEngine.UI.Text _text;
 
@@ -32,31 +31,29 @@ namespace LastStar
         private void Start()
         {
             _player = FindObjectOfType<Player>();
-            _caption = Instantiate(Source);
-            _caption.transform.SetParent(transform);
 
-            _panel = _caption.GetComponentInChildren<UnityEngine.UI.Image>();
-            _text = _caption.GetComponentInChildren<UnityEngine.UI.Text>();
+            _panel = Source.GetComponentInChildren<UnityEngine.UI.Image>();
+            _text = Source.GetComponentInChildren<UnityEngine.UI.Text>();
 
             _text.text = TextData;
         }
         private void Update()
         {
-            if (_caption == null)
+            if (Source == null)
                 Destroy(this);
 
             float distance = Vector3.Distance(_player.transform.position, transform.position);
             if (distance < _player.selector.MaxDistance)
             {
                 float alpha = (_player.selector.MaxDistance - distance) / _player.selector.MaxDistance;
-                _caption.SetActive(true);
+                Source.SetActive(true);
 
                 Vector3 dir = transform.position - Camera.main.transform.position;
-                _caption.transform.position = transform.position - dir.normalized * Radius;
-                _caption.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
-                Vector3 scale = _caption.transform.parent.lossyScale;
+                Source.transform.position = transform.position - dir.normalized * Radius;
+                Source.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+                Vector3 scale = Source.transform.parent.lossyScale;
                 float scalex = dir.magnitude / scale.x / 1000.0f;
-                _caption.transform.localScale = new Vector3(scalex, scalex, 1.0f);
+                Source.transform.localScale = new Vector3(scalex, scalex, 1.0f);
 
                 Color temp;
 
@@ -70,7 +67,7 @@ namespace LastStar
             }
             else
             {
-                _caption.SetActive(false);
+                Source.SetActive(false);
             }
         }
     }

@@ -14,22 +14,24 @@ namespace LastStar
             TechRecombination = 0x4,
             ArtifactViewing = 0x8,
             LetterBoxView = 0x10,
+            GoToColorView = 0xFF,
             UIMenu = 0xE
         }
-        public InterfaceElem RegularMenu;
-        public InterfaceElem DockingMenu;
-        public InterfaceElem TechRecombinationMenu;
-        public InterfaceElem ArtifactViewingMenu;
-        public InterfaceElem LetterBoxMenu;
 
         private MenuType _current_menu;
         private InterfaceElem _current;
+        private InterfaceElem[] _listed_elements;
+        private Dictionary<MenuType, InterfaceElem> _sorted_elements;
 
         private Dictionary<InterfaceElem, Renderer[]> _renderers;
 
         public MenuType CurrentMenu
         {
             get { return _current_menu; }
+        }
+        public InterfaceElem element(MenuType type)
+        {
+            return _sorted_elements[type];
         }
         public bool test(MenuType bitfield)
         {
@@ -40,61 +42,32 @@ namespace LastStar
         public void GoTo(MenuType menu)
         {
             _current.Hide();
-            switch (menu)
-            {
-                case MenuType.Regular:
-                    _current = RegularMenu;
-                    break;
-                case MenuType.Docking:
-                    _current = DockingMenu;
-                    break;
-                case MenuType.TechRecombination:
-                    _current = TechRecombinationMenu;
-                    break;
-                case MenuType.ArtifactViewing:
-                    _current = ArtifactViewingMenu;
-                    break;
-                case MenuType.LetterBoxView:
-                    _current = LetterBoxMenu;
-                    break;
-                default:
-                    break;
-            }
+            _current = _sorted_elements[menu];
             _current_menu = menu;
             _current.Show();
         }
         private void Awake()
         {
-            if (RegularMenu == null)
-                Destroy(this);
-
             _renderers = new Dictionary<InterfaceElem, Renderer[]>();
 
-            _current_menu = MenuType.Regular;
-            _current = RegularMenu;
+            _listed_elements = GetComponentsInChildren<InterfaceElem>(true);
+            _sorted_elements = new Dictionary<MenuType, InterfaceElem>();
 
-            RegularMenu.Show();
-            RegularMenu.OnCreate.Invoke();
+            foreach( InterfaceElem elem in _listed_elements )
+            {
+                if ( elem.Type == MenuType.Regular )
+                {
+                    elem.Show();
 
-            if (DockingMenu != null)
-            {
-                DockingMenu.Hide();
-                DockingMenu.OnCreate.Invoke();
-            }
-            if (TechRecombinationMenu!=null)
-            {
-                TechRecombinationMenu.Hide();
-                TechRecombinationMenu.OnCreate.Invoke();
-            }
-            if (ArtifactViewingMenu!=null)
-            {
-                ArtifactViewingMenu.Hide();
-                ArtifactViewingMenu.OnCreate.Invoke();
-            }
-            if (LetterBoxMenu!=null)
-            {
-                LetterBoxMenu.Hide();
-                LetterBoxMenu.OnCreate.Invoke();
+                    _current_menu = MenuType.Regular;
+                    _current = elem;
+                }
+                else
+                {
+                    elem.Hide();
+                }
+                elem.OnCreate.Invoke();
+                _sorted_elements[elem.Type] = elem;
             }
         }
     }

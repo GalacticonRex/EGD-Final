@@ -28,9 +28,9 @@ namespace LastStar
             return _special;
         }
 
-        static public Mesh GetMesh()
+        static public Mesh GetMesh(System.Random r)
         {
-            return _elements[Random.Range(0, _elements.Length)];
+            return (r==null)?_elements[Random.Range(0, _elements.Length)] : _elements[r.Next(0, _elements.Length)];
         }
         static public Mesh GetMesh(int i)
         {

@@ -68,7 +68,7 @@ namespace LastStar
         private void Start()
         {
             InterfaceMenu im = FindObjectOfType<InterfaceMenu>();
-            _artf_screen = im.ArtifactViewingMenu.GetComponent<ArtifactScreen>();
+            _artf_screen = im.element(InterfaceMenu.MenuType.ArtifactViewing).GetComponent<ArtifactScreen>();
             _resources = FindObjectOfType<ResourceManager>();
 
             _tasks = new List<DroneTask>();

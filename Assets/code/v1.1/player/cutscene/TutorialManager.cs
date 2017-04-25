@@ -6,6 +6,8 @@ namespace LastStar
 {
     public class TutorialManager : MonoBehaviour
     {
+        private static int _current_index = 0;
+
         public GameObject TutorialBox;
         public UnityEngine.UI.Text TutorialText;
         public UnityEngine.UI.Button Skip;
@@ -14,7 +16,6 @@ namespace LastStar
 
         private Player _player;
         private TutorialItem[] _tutorial_items;
-        private int _current_index;
         private bool block = false;
 
         private IEnumerator Wait(int index, float time)
@@ -80,6 +81,7 @@ namespace LastStar
             StopAllCoroutines();
             _player.cameraSystem.SetTarget(_player.cameraSystem.PlayerRear, 2.0f);
             TutorialBox.SetActive(false);
+            _current_index = int.MaxValue;
         }
         public void OpenTutorial()
         {

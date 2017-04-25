@@ -74,6 +74,7 @@ namespace LastStar
         public CameraScanner PlayerScanner;
         public float RearToScanner = 0.5f;
         public float ScannerToRear = 1.2f;
+        public Vector3 ShakeAmount;
 
         #region Private Attributes
         private InterfaceMenu _menus;
@@ -168,7 +169,10 @@ namespace LastStar
 
             _player_camera.fieldOfView = _current_fov + _actual_additional_fov;
             _player_camera.transform.rotation = _current_rotation;
-            _player_camera.transform.position = _current_position + _current_rotation * new Vector3(0, 0, 0.25f * _actual_additional_fov - _current_arm_length);
+            _player_camera.transform.position =
+                Vector3.Scale(Random.onUnitSphere, ShakeAmount) +
+                _current_position +
+                _current_rotation * new Vector3(0, 0, 0.25f * _actual_additional_fov - _current_arm_length);
 
             _last_mouse_pos = Input.mousePosition;
 

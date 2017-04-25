@@ -6,6 +6,7 @@ namespace LastStar
 {
     public class CameraStatic : CameraView
     {
+        public bool IncludeOrientation = false;
         public float Distance = 400.0f;
         public Vector2 Rotation = new Vector2(0, 0);
         public Vector2 RotationOverTime = new Vector2(0, 0);
@@ -26,7 +27,14 @@ namespace LastStar
             _target_camera_distance = Distance;
             _target_rot_x = Rotation.x;
             _target_rot_y = Rotation.y;
-            _actual_rotation = CalculateRotationFromAngles();
+            if (IncludeOrientation)
+            {
+                _actual_rotation = transform.rotation * CalculateRotationFromAngles();
+            }
+            else
+            {
+                _actual_rotation = CalculateRotationFromAngles();
+            }
         }
     }
 }

@@ -52,7 +52,7 @@ namespace LastStar {
         {
             //float t_hgt = CameraSystem.FrustumHeightAtDistance(Camera.main, _actual_camera_distance);
             //return CameraSystem.FOVForHeightAndDistance(t_hgt, _actual_camera_distance);
-            return 70.0f;
+            return 45.0f;
         }
 
         protected abstract void OnStart();
