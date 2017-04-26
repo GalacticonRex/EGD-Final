@@ -7,7 +7,7 @@ namespace LastStar
     public class AsteroidCluster : MonoBehaviour
     {
         public GameObject AsteroidSrc;
-        public GameObject CaptionSrc;
+        public GameObject AsteroidOreSrc;
 
         public float OreProbability = 1.0f;
         public float OreMinimum = 50.0f;
@@ -47,23 +47,27 @@ namespace LastStar
         }
         private GameObject MakeAsteroid(Vector3 location, float radius)
         {
-            GameObject go = Instantiate(AsteroidSrc);
-            go.transform.parent = transform;
+            GameObject go;
 
             if (Random.value < OreProbability / 100.0f)
             {
-                go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetSpecialMaterial();
+                go = Instantiate(AsteroidOreSrc);
+                go.transform.parent = transform;
 
-                OreDeposit o = go.AddComponent<OreDeposit>();
-                o.InitialAmount = (Random.value * Random.value) * (OreMaximum - OreMinimum) + OreMinimum;
+                go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetSpecialMaterial();
 
                 GenerateTransform(location, radius, go.transform);
 
-                o.ManageCaptionText(CaptionSrc);
+                OreDeposit o = go.GetComponent<OreDeposit>();
+                o.InitialAmount = (Random.value * Random.value) * (OreMaximum - OreMinimum) + OreMinimum;
             }
             else
             {
+                go = Instantiate(AsteroidSrc);
+                go.transform.parent = transform;
+
                 go.GetComponent<MeshRenderer>().sharedMaterial = Asteroids.GetNormalMaterial();
+
                 GenerateTransform(location, radius, go.transform);
             }
 

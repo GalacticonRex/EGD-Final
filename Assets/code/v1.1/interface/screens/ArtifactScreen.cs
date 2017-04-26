@@ -8,8 +8,8 @@ namespace LastStar
     {
         public GameObject TextBox;
         public UnityEngine.UI.Text TextTarget;
+        public ObjectLog ObjLog;
 
-        private ObjectLog _obj_log;
         private string _target_data;
         private InterfaceMenu _menus;
         private Coroutine _process;
@@ -22,7 +22,7 @@ namespace LastStar
 
         public void AddArtifact(Artifact a)
         {
-            GameObject go = _obj_log.Push();
+            GameObject go = ObjLog.Push();
             ArtifactUIItem artf = go.GetComponent<ArtifactUIItem>();
             artf.Item = a;
             UnityEngine.UI.Button but = go.GetComponent<UnityEngine.UI.Button>();
@@ -51,18 +51,9 @@ namespace LastStar
             _process = null;
         }
 
-        public void Init()
+        private void Awake()
         {
-            Start();
-        }
-
-        private void Start()
-        {
-            if (_obj_log != null)
-                return;
-
             _menus = FindObjectOfType<InterfaceMenu>();
-            _obj_log = GetComponentInChildren<ObjectLog>();
         }
         private void Update()
         {
@@ -77,7 +68,7 @@ namespace LastStar
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                _menus.GoTo(InterfaceMenu.MenuType.Regular);
+                _menus.Pop();
             }
         }
     }

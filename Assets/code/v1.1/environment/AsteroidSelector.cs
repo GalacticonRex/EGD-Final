@@ -7,7 +7,6 @@ namespace LastStar
     public class AsteroidSelector : MonoBehaviour
     {
         private Player _player;
-        private ParticleSystem _particles;
         private Renderer _renderer;
 
         void CreateTask(OreDeposit ore, float work)
@@ -29,10 +28,8 @@ namespace LastStar
         {
             _player = FindObjectOfType<Player>();
             _renderer = GetComponent<Renderer>();
-            _particles = GetComponentInChildren<ParticleSystem>();
 
             _renderer.enabled = false;
-            _particles.Stop();
         }
 
         void Update()
@@ -44,8 +41,6 @@ namespace LastStar
             if (s == null)
             {
                 _renderer.enabled = false;
-                if (_particles.isPlaying)
-                    _particles.Stop();
                 return;
             }
 
@@ -56,7 +51,8 @@ namespace LastStar
             }
             else
             {
-                transform.position = ore.transform.position;
+                MeshFilter mesh = ore.GetComponent<MeshFilter>();
+                transform.position = ore.transform.position - mesh.mesh.bounds.center;
                 transform.localScale = ore.transform.localScale * 5.0f;
                 _renderer.enabled = true;
                 if (Input.GetMouseButton(0))

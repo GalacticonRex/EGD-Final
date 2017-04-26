@@ -330,7 +330,6 @@ namespace LastStar
         {
             #region Members
             private AssetDatabase _parent;
-            private System.Random _random = new System.Random();
             private Dictionary<int, string> _pnoun = new Dictionary<int, string>();
             private Dictionary<string, Dictionary<int, string>> _data;
             #endregion
@@ -351,7 +350,7 @@ namespace LastStar
                     _pnoun.Add(index, value[0].ToString().ToUpper() + value.Substring(1));
                 }
             }
-            public string pnoun(int index = -1)
+            public string pnoun(System.Random _random, int index = -1)
             {
                 if (index < 0)
                 {
@@ -712,23 +711,21 @@ namespace LastStar
         public class ElementTypes
         {
             #region Members
-            private System.Random _random;
             private Dictionary<string, string[]> _sorted;
             private string[] _unsorted;
             #endregion
             #region Methods
             public ElementTypes(string[] a, Dictionary<string, string[]> b)
             {
-                _random = new System.Random();
                 _sorted = b;
                 _unsorted = a;
             }
-            public string Get()
+            public string Get(System.Random _random)
             {
                 string result = _unsorted[_random.Next(0, _unsorted.Length)];
                 return result;
             }
-            public string Get(string filter)
+            public string Get(System.Random _random, string filter)
             {
                 string[] output;
                 if (!_sorted.TryGetValue(filter, out output))
@@ -751,7 +748,7 @@ namespace LastStar
         public string DataDirectory = "data";
         public string EventDirectory = "event";
 
-        private System.Random _random = new System.Random();
+        private System.Random _random;
         private List<string> _file_names;
         private List<string> _traits;
         private Dictionary<string, CivEvent> _name_to_event;
@@ -777,7 +774,7 @@ namespace LastStar
             ElementTypes elem;
             if (!_elements.TryGetValue(_class, out elem))
                 throw new System.Exception("Cannot find element of class \"" + _class + "\"");
-            string result = elem.Get();
+            string result = elem.Get(_random);
             return result;
         }
         public string Get(string _class, string _filter)
@@ -785,7 +782,7 @@ namespace LastStar
             ElementTypes elem;
             if (!_elements.TryGetValue(_class, out elem))
                 throw new System.Exception("Cannot find element of class \"" + _class + "\"");
-            string result = elem.Get(_filter);
+            string result = elem.Get(_random, _filter);
             return result;
         }
         public string GetTrait()
@@ -832,13 +829,13 @@ namespace LastStar
                     string added = "";
                     if (parsed.Length == 1)
                     {
-                        added = enc.pnoun();
+                        added = enc.pnoun(_random);
                     }
                     else
                     {
                         int index;
                         if (int.TryParse(parsed[1], out index))
-                            added = enc.pnoun(index);
+                            added = enc.pnoun(_random, index);
                         else
                             throw new System.Exception("Could not find a replacement for \"" + variable_data[i] + "\"");
                     }
@@ -1337,6 +1334,7 @@ namespace LastStar
 
         public AssetDatabase()
         {
+            _random = new System.Random(862748482 ^ UniverseMap.GetSeed());
             GetTraitFile();
             GetSourceAllFiles();
             GetEventAllFiles();

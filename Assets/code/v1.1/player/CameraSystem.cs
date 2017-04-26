@@ -66,6 +66,16 @@ namespace LastStar
                 return mousePos - _last_mouse_pos;
             }
         }
+        public float flareNearClip
+        {
+            get { return FlareCamera.nearClipPlane; }
+            set { FlareCamera.nearClipPlane = value; }
+        }
+        public float flareFarClip
+        {
+            get { return FlareCamera.farClipPlane; }
+            set { FlareCamera.farClipPlane = value; }
+        }
         #endregion
 
         public Light ScannerIlluminator;
@@ -75,11 +85,12 @@ namespace LastStar
         public float RearToScanner = 0.5f;
         public float ScannerToRear = 1.2f;
         public Vector3 ShakeAmount;
+        public Camera PlayerCamera;
+        public Camera FlareCamera;
 
         #region Private Attributes
         private InterfaceMenu _menus;
         private PilotedNavigator _nav;
-        private Camera _player_camera;
 
         private CameraView[] _camera_views;
 
@@ -89,11 +100,13 @@ namespace LastStar
         private Quaternion _current_rotation;
         private float _current_arm_length;
         private float _current_fov;
+        private float _current_camera_render_distance;
 
         private Vector3 _source_position;
         private Quaternion _source_rotation;
         private float _source_arm_length;
         private float _source_fov;
+        private float _source_camera_render_distance;
 
         private CameraView _target;
         private float _view_lerp;
@@ -107,13 +120,12 @@ namespace LastStar
 
         public void SetTarget(CameraView v, float trans)
         {
-            print("Set target to " + v.name);
-
             _transition_rate = trans;
             _source_position = _current_position;
             _source_rotation = _current_rotation;
             _source_arm_length = _current_arm_length;
             _source_fov = _current_fov;
+            _source_camera_render_distance = _current_camera_render_distance;
 
             _target = v;
             _view_lerp = 0.0f;
@@ -130,10 +142,12 @@ namespace LastStar
             _current_arm_length = _target.cameraDistance * _view_lerp + _source_arm_length * (1.0f - _view_lerp);
             _current_rotation = Quaternion.Lerp(_source_rotation, _target.rotation, _view_lerp);
             _current_position = Vector3.Lerp(_source_position, _target.transform.position, _view_lerp);
+            _current_camera_render_distance = _target.CameraRenderDistance * _view_lerp + _source_camera_render_distance * (1.0f - _view_lerp);
 
-            _player_camera.fieldOfView = _current_fov + _actual_additional_fov;
-            _player_camera.transform.rotation = _current_rotation;
-            _player_camera.transform.position = _current_position + _current_rotation * new Vector3(0,0, 0.25f * _actual_additional_fov - _current_arm_length);
+            PlayerCamera.farClipPlane = _current_camera_render_distance;
+            PlayerCamera.fieldOfView = _current_fov + _actual_additional_fov;
+            PlayerCamera.transform.rotation = _current_rotation;
+            PlayerCamera.transform.position = _current_position + _current_rotation * new Vector3(0,0, 0.25f * _actual_additional_fov - _current_arm_length);
 
             _view_lerp = Mathf.Min(1.0f, _view_lerp + Time.unscaledDeltaTime / _transition_rate);
             if ( _target == PlayerScanner )
@@ -152,7 +166,7 @@ namespace LastStar
             _menus = FindObjectOfType<InterfaceMenu>();
 
             _camera_views = FindObjectsOfType<CameraView>();
-            _player_camera = GetComponentInChildren<Camera>();
+            PlayerCamera = GetComponentInChildren<Camera>();
 
             _target = InitialView;
             _view_lerp = 0.0f;
@@ -166,10 +180,11 @@ namespace LastStar
             _source_arm_length = _current_arm_length = _target.cameraDistance;
             _source_rotation = _current_rotation = _target.rotation;
             _source_position = _current_position = _target.transform.position;
+            _source_camera_render_distance = _target.CameraRenderDistance;
 
-            _player_camera.fieldOfView = _current_fov + _actual_additional_fov;
-            _player_camera.transform.rotation = _current_rotation;
-            _player_camera.transform.position =
+            PlayerCamera.fieldOfView = _current_fov + _actual_additional_fov;
+            PlayerCamera.transform.rotation = _current_rotation;
+            PlayerCamera.transform.position =
                 Vector3.Scale(Random.onUnitSphere, ShakeAmount) +
                 _current_position +
                 _current_rotation * new Vector3(0, 0, 0.25f * _actual_additional_fov - _current_arm_length);
@@ -187,6 +202,10 @@ namespace LastStar
             _actual_additional_fov = _target_additional_fov * 0.1f + _actual_additional_fov * 0.9f;
 
             UpdateValues();
+
+            FlareCamera.fieldOfView = PlayerCamera.fieldOfView;
+            FlareCamera.transform.position = PlayerCamera.transform.position;
+            FlareCamera.transform.rotation = PlayerCamera.transform.rotation;
         }
         private void LateUpdate()
         {

@@ -6,23 +6,42 @@ namespace LastStar
 {
     public class TechScreen : MonoBehaviour
     {
-        private ObjectLog _obj_log;
+        public ModelImage Draggable;
+        public TechModelViewers Viewers;
+        public ObjectGrid ObjGrid;
+
         private string _target_data;
         private InterfaceMenu _menus;
         private Coroutine _process;
 
-        public void Init()
+        public void AddTech(TechPiece tech)
         {
-            Start();
+            ObjGrid.PushElement(0, tech);
+        }
+        public void RemoveTech(TechPiece tech)
+        {
+            int i = ObjGrid.GetIndexOfMounted(tech);
+            ObjGrid.PopElement(i);
         }
 
-        private void Start()
+        public void PassToDraggable(TechPiece tech)
         {
-            if (_obj_log != null)
+            if (tech == null)
                 return;
 
+            Draggable.gameObject.SetActive(true);
+
+            ModelViewer view;
+            if ((view = Viewers.GetModelView(tech.Name())) != null)
+            {
+                Draggable.SetSource(view);
+            }
+        }
+
+        private void Awake()
+        {
             _menus = FindObjectOfType<InterfaceMenu>();
-            _obj_log = GetComponentInChildren<ObjectLog>();
+            Draggable.gameObject.SetActive(false);
         }
         private void Update()
         {

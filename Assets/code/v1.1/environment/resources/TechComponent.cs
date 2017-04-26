@@ -92,18 +92,14 @@ namespace LastStar
         public int Right = -1;
         public bool Extracting;
 
-        private CameraSystem _player;
+        private Player _player;
+        private Camera _camera;
         private TechPiece _root;
         private Renderer _renderer;
         private Collider _collider;
+        private CaptionText _cap;
 
-        public TechPiece Tech
-        {
-            get
-            {
-                return _root;
-            }
-        }
+        public TechPiece Tech { get { return _root; } }
 
         public void PickUp(DroneAI drone)
         {
@@ -117,30 +113,37 @@ namespace LastStar
             // Destroy Colliders
             Collider[] collids = GetComponentsInChildren<Collider>();
             foreach(Collider collid in collids)
-            {
                 Destroy(collid);
-            }
 
-            // Destroy Caption Text
-            CaptionText cap = GetComponent<CaptionText>();
-            Destroy(cap);
-            
-            // Destroy Caption
-            Canvas canv = GetComponentInChildren<Canvas>();
-            if (canv != null)
-                Destroy(canv.gameObject);
+            Destroy(_cap.gameObject);
+            _cap = null;
         }
 
         private void Start()
         {
-            _player = FindObjectOfType<CameraSystem>();
+            _player = FindObjectOfType<Player>();
+            _camera = _player.GetComponentInChildren<Camera>();
             _renderer = GetComponent<Renderer>();
             _collider = GetComponent<Collider>();
+            _cap = GetComponentInChildren<CaptionText>(true);
+            _cap.Text = Name;
+            _cap.Radius = transform.localScale.x * 1.2f;
 
             if (_renderer == null || _collider == null)
                 Destroy(this);
 
             _root = new TechPiece(Name, Weight, Top, Bottom, Left, Right);
+        }
+        private void Update()
+        {
+            if (_cap == null)
+                return;
+
+            float dist = Vector3.Distance(transform.position, _camera.transform.position);
+            if (dist < _player.selector.MaxDistance)
+                _cap.gameObject.SetActive(true);
+            else if (_cap.gameObject.activeInHierarchy)
+                _cap.gameObject.SetActive(false);
         }
     }
 }

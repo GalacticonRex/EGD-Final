@@ -8,12 +8,17 @@ namespace LastStar
     {
         static private List<TechPiece> _tech_stored = new List<TechPiece>();
         static private List<Artifact> _artf_stored = new List<Artifact>();
+
         static private float _energy_capacity = 1000.0f;
         static private float _energy_stored = 1000.0f;
         static private float _storage_capacity = 10000.0f;
         static private float _storage_ore = 0;
+
         static private ulong _current_year = 16182468175968148519;
         static private ulong _final_year = 18446744073709551615;
+
+        static private int _solar_panels_stored = 0;
+        static private int _light_beacons_stored = 0;
 
         static public readonly int StoreOre = 0;
         static public readonly int StoreTech = 1;
@@ -21,6 +26,9 @@ namespace LastStar
         public CapacityBar Energy;
         public CapacityBar Storage;
         public CapacityTextULong Year;
+
+        public ArtifactScreen ArtifactDisplay;
+        public TechScreen TechDisplay;
 
         public float HarvestDistance = 100.0f;
         public float ScanDistance = 100.0f;
@@ -38,6 +46,15 @@ namespace LastStar
         public float CurrentStorage()
         {
             return Storage.remaining;
+        }
+
+        public void BuildSolarPanelArray()
+        {
+            _solar_panels_stored++;
+        }
+        public void BuildLightBeacon()
+        {
+            _light_beacons_stored++;
         }
 
         public bool RequestTime(ulong years)
@@ -104,11 +121,13 @@ namespace LastStar
                 Storage.Add(amount, StoreTech);
                 _tech_stored.Add(t);
             }
+            TechDisplay.AddTech(t);
             return good;
         }
         public bool RequestStorage(Artifact a)
         {
             _artf_stored.Add(a);
+            ArtifactDisplay.AddArtifact(a);
             return true;
         }
 
@@ -126,6 +145,11 @@ namespace LastStar
             foreach (TechPiece t in _tech_stored)
             {
                 Storage.Add(t.GetTotalWeight(), 1);
+                TechDisplay.AddTech(t);
+            }
+            foreach(Artifact a in _artf_stored)
+            {
+                ArtifactDisplay.AddArtifact(a);
             }
         }
         private void Update()

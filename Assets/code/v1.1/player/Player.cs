@@ -61,7 +61,7 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if ( _base != null && b == _base )
             {
-                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponent<PrimaryScreen>();
+                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponentInParent<PrimaryScreen>();
                 p.AllowDocking();
             }
         }
@@ -70,12 +70,12 @@ namespace LastStar
             BaseManager b = other.GetComponent<BaseManager>();
             if (_base != null && b == _base)
             {
-                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponent<PrimaryScreen>();
+                PrimaryScreen p = _menus.element(InterfaceMenu.MenuType.Regular).GetComponentInParent<PrimaryScreen>();
                 p.DisallowDocking();
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             _inputs = GetComponent<InputManager>();
             _selector = GetComponent<ObjectSeletor>();

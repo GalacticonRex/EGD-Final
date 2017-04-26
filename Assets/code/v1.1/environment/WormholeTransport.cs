@@ -27,7 +27,7 @@ namespace LastStar
             if (p != null)
             {
                 p.cameraSystem.SetTarget(TargetView, 1.0f);
-                p.menu.GoTo(InterfaceMenu.MenuType.GoToColorView);
+                p.menu.Push(InterfaceMenu.MenuType.GoToColorView);
                 p.menu.element(InterfaceMenu.MenuType.GoToColorView).
                     GetComponent<GoToColorScreen>().
                     Push(Color.black, NextScene, FadeDelay, FadeDuration);

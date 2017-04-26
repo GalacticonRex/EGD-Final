@@ -18,16 +18,16 @@ namespace LastStar
             UIMenu = 0xE
         }
 
-        private MenuType _current_menu;
+        private Stack<MenuType> _current_menu = new Stack<MenuType>();
+        private Dictionary<MenuType, InterfaceElem> _sorted_elements = new Dictionary<MenuType, InterfaceElem>();
         private InterfaceElem _current;
         private InterfaceElem[] _listed_elements;
-        private Dictionary<MenuType, InterfaceElem> _sorted_elements;
 
-        private Dictionary<InterfaceElem, Renderer[]> _renderers;
+        private Dictionary<InterfaceElem, Renderer[]> _renderers = new Dictionary<InterfaceElem, Renderer[]>();
 
         public MenuType CurrentMenu
         {
-            get { return _current_menu; }
+            get { return (_current_menu.Count==0)?MenuType.None:_current_menu.Peek(); }
         }
         public InterfaceElem element(MenuType type)
         {
@@ -35,32 +35,41 @@ namespace LastStar
         }
         public bool test(MenuType bitfield)
         {
-            MenuType bitand = _current_menu & bitfield;
+            MenuType bitand = _current_menu.Peek() & bitfield;
             return bitand != MenuType.None;
         }
 
-        public void GoTo(MenuType menu)
+        public void Push(MenuType menu)
         {
-            _current.Hide();
+            _current_menu.Push(menu);
+
+            if ( _current != null )
+                _current.Hide();
             _current = _sorted_elements[menu];
-            _current_menu = menu;
             _current.Show();
+        }
+        public void Pop()
+        {
+            _current_menu.Pop();
+
+            _current.Hide();
+            if (_current_menu.Count > 0)
+            {
+                _current = _sorted_elements[_current_menu.Peek()];
+                _current.Show();
+            }
         }
         private void Awake()
         {
-            _renderers = new Dictionary<InterfaceElem, Renderer[]>();
-
             _listed_elements = GetComponentsInChildren<InterfaceElem>(true);
-            _sorted_elements = new Dictionary<MenuType, InterfaceElem>();
 
-            foreach( InterfaceElem elem in _listed_elements )
+            foreach ( InterfaceElem elem in _listed_elements )
             {
                 if ( elem.Type == MenuType.Regular )
                 {
-                    elem.Show();
-
-                    _current_menu = MenuType.Regular;
                     _current = elem;
+                    _current.Show();
+                    _current_menu.Push(MenuType.Regular);
                 }
                 else
                 {

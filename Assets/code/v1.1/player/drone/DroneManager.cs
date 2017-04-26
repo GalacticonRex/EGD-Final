@@ -51,7 +51,7 @@ namespace LastStar
 
             if (a != null)
             {
-                _artf_screen.AddArtifact(a);
+                _resources.RequestStorage(a);
             }
             if (t != null)
             {

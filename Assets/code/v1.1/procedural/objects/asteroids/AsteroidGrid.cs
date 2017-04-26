@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LastStar {
-    using AsteroidCellGrid = Dictionary<int, Dictionary<int, Dictionary<int, AsteroidCell>>>;
-    using Grid_ZDefined = Dictionary<int, Dictionary<int, AsteroidCell>>;
-    using Grid_YDefined = Dictionary<int, AsteroidCell>;
+    using AsteroidCellGrid = Dictionary<int, Dictionary<int, Dictionary<int, AsteroidGridCell>>>;
+    using Grid_ZDefined = Dictionary<int, Dictionary<int, AsteroidGridCell>>;
+    using Grid_YDefined = Dictionary<int, AsteroidGridCell>;
 
     public class AsteroidGrid : MonoBehaviour {
         public static float SquareValue(float x) { return x * x; }
@@ -37,41 +37,63 @@ namespace LastStar {
         public float GlobalFog = 0.01f;
         public float GlobalFogScanner = 0.01f;
         public GameObject[] Sources;
+        public float[] Probabilities;
         public float GridSize = 5000.0f;
-        public float MinDensity;
-        public float MaxDensity;
-        public float GenerationRadius;
 
         private System.Random _random = new System.Random(UniverseMap.GetSeed());
         private AsteroidCellGrid _grid = new AsteroidCellGrid();
         private Player _center;
         private float _player_radius;
+        private int[] _location;
+        private int[] _dimensions;
 
-        private AsteroidCell create(bool active)
+        public float GetRandomValue()
         {
-            GameObject go = Instantiate(Sources[_random.Next(0, Sources.Length)]);
-            AsteroidCell cell = go.GetComponent<AsteroidCell>();
+            return (float)_random.NextDouble();
+        }
+        public int GetRandomIntValue(int min, int max)
+        {
+            return _random.Next(min, max);
+        }
 
+        private AsteroidGridCell create(bool active)
+        {
+            float random = (float)_random.NextDouble();
+            int selected = 0;
+            for (int j = 0; j < Probabilities.Length; j++)
+            {
+                random -= Probabilities[j];
+                if (random <= 0)
+                {
+                    selected = j;
+                    break;
+                }
+            }
+
+            GameObject go = Instantiate(Sources[selected]);
+            AsteroidGridCell cell = go.GetComponent<AsteroidGridCell>();
+
+            cell.ParentGrid = this;
             cell.Size = GridSize;
-            cell.TargetDensity = (float)(_random.NextDouble() * _random.NextDouble() * (MaxDensity + MinDensity) - MinDensity);
 
             go.transform.SetParent(transform);
             go.SetActive(active);
 
             return cell;
         }
-        private AsteroidCell access(int x, int y, int z, bool active)
+        private AsteroidGridCell access(int x, int y, int z, bool active)
         {
             Grid_ZDefined get_z;
             Grid_YDefined get_y;
-            AsteroidCell get_x;
+            AsteroidGridCell get_x;
 
             if (!_grid.TryGetValue(z, out get_z))
             {
                 get_x = create(active);
                 get_x.Location = new int[3] { x, y, z };
                 get_x.transform.position = new Vector3(x * GridSize, y * GridSize, z * GridSize);
-                get_x.Init();
+                if ( get_x.gameObject.activeInHierarchy )
+                    get_x.Init();
 
                 get_y = new Grid_YDefined();
                 get_z = new Grid_ZDefined();
@@ -85,7 +107,8 @@ namespace LastStar {
                 get_x = create(active);
                 get_x.Location = new int[3] { x, y, z };
                 get_x.transform.position = new Vector3(x * GridSize, y * GridSize, z * GridSize);
-                get_x.Init();
+                if (get_x.gameObject.activeInHierarchy)
+                    get_x.Init();
 
                 get_y = new Grid_YDefined();
 
@@ -97,9 +120,14 @@ namespace LastStar {
                 get_x = create(active);
                 get_x.Location = new int[3] { x, y, z };
                 get_x.transform.position = new Vector3(x * GridSize, y * GridSize, z * GridSize);
-                get_x.Init();
+                if (get_x.gameObject.activeInHierarchy)
+                    get_x.Init();
 
                 get_y.Add(x, get_x);
+            }
+            else
+            {
+                get_x.gameObject.SetActive(active);
             }
 
             return get_x;
@@ -107,34 +135,75 @@ namespace LastStar {
 
         private void Start()
         {
-            RenderSettings.fog = true;
-            RenderSettings.fogColor = Color.black;
-            RenderSettings.fogMode = FogMode.Exponential;
-            RenderSettings.fogDensity = GlobalFog;
-
             _center = FindObjectOfType<Player>();
 
-            Camera cam = _center.GetComponentInChildren<Camera>();
+            Camera cam = _center.cameraSystem.PlayerCamera;
             _player_radius = cam.farClipPlane;
-            int radius = Mathf.CeilToInt(_player_radius / (2 * GridSize));
+            int radius = Mathf.CeilToInt(_player_radius / GridSize);
+
+            _location = new int[3] { 0, 0, 0 };
+            _dimensions = new int[3] { radius, radius, radius };
 
             for ( int z = -radius; z<=radius;z++ )
-            {
                 for (int y = -radius; y <= radius; y++)
-                {
                     for (int x = -radius; x <= radius; x++)
-                    {
-                        if (CheckOverlap(_center.transform.position, _player_radius, new Vector3(x*GridSize, y * GridSize, z * GridSize), GridSize))
-                        {
-                            access(x, y, z, true);
-                        }
-                    }
-                }
-            }
+                        access(x, y, z, true);
+
+            RenderSettings.fog = true;
+            RenderSettings.fogColor = cam.backgroundColor;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogStartDistance = _player_radius * 0.25f;
+            RenderSettings.fogEndDistance = _player_radius;
         }
         private void Update()
         {
-            RenderSettings.fogDensity = GlobalFog * _center.cameraSystem.interpolation + GlobalFogScanner * (1 - _center.cameraSystem.interpolation);
+            Camera cam = _center.cameraSystem.PlayerCamera;
+            _player_radius = cam.farClipPlane;
+
+            int[] new_location = new int[3]
+            {
+                Mathf.RoundToInt(_center.transform.position.x / GridSize),
+                Mathf.RoundToInt(_center.transform.position.y / GridSize),
+                Mathf.RoundToInt(_center.transform.position.z / GridSize)
+            };
+            
+            if (new_location[0] != _location[0])
+            {
+                int direction = System.Math.Sign(new_location[0] - _location[0]);
+                for (int z = -_dimensions[2]; z <= _dimensions[2]; z++)
+                    for (int y = -_dimensions[1]; y <= _dimensions[1]; y++) {
+                        access(_location[0] - _dimensions[0] * direction, _location[1] + y, _location[2] + z, false);
+                        access(new_location[0] + _dimensions[0] * direction, new_location[1] + y, new_location[2] + z, true);
+                    }
+            }
+
+            if (new_location[1] != _location[1])
+            {
+                int direction = System.Math.Sign(new_location[1] - _location[1]);
+                for (int z = -_dimensions[2]; z <= _dimensions[2]; z++)
+                    for (int x = -_dimensions[0]; x <= _dimensions[0]; x++)
+                    {
+                        access(_location[0] + x, _location[1] - _dimensions[1] * direction, _location[2] + z, false);
+                        access(new_location[0] + x, new_location[1] + _dimensions[1] * direction, new_location[2] + z, true);
+                    }
+            }
+
+            if (new_location[2] != _location[2])
+            {
+                int direction = System.Math.Sign(new_location[2] - _location[2]);
+                for (int y = -_dimensions[1]; y <= _dimensions[1]; y++)
+                    for (int x = -_dimensions[0]; x <= _dimensions[0]; x++)
+                    {
+                        access(_location[0] + x, _location[1] + y, _location[2] - _dimensions[2] * direction, false);
+                        access(new_location[0] + x, new_location[1] + y, new_location[2] + _dimensions[2] * direction, true);
+                    }
+            }
+
+            _location = new_location;
+
+            //RenderSettings.fogDensity = GlobalFog * _center.cameraSystem.interpolation + GlobalFogScanner * (1 - _center.cameraSystem.interpolation);
+            RenderSettings.fogStartDistance = _player_radius * 0.25f;
+            RenderSettings.fogEndDistance = _player_radius;
         }
     }
 }

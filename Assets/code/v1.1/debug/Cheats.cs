@@ -34,7 +34,7 @@ namespace LastStar
             }
             if (_resources != null && Input.GetKeyDown(CreateOre))
             {
-                _resources.RequestStorage(100.0f);
+                _resources.RequestStorage(_resources.CurrentStorage());
             }
             if ( Input.GetKeyDown(ReturnToMainMenu) )
             {
@@ -44,13 +44,13 @@ namespace LastStar
             {
                 if (_interface.CurrentMenu == InterfaceMenu.MenuType.LetterBoxView)
                 {
-                    _interface.GoTo(_last_menu);
+                    _interface.Push(_last_menu);
                     _camera.SetTarget(_camera.PlayerRear, 1.5f);
                 }
                 else
                 {
                     _last_menu = _interface.CurrentMenu;
-                    _interface.GoTo(InterfaceMenu.MenuType.LetterBoxView);
+                    _interface.Pop();
                     _camera.SetTarget(_cam_static, 1.5f);
                 }
             }

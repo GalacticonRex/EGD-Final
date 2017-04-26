@@ -23,7 +23,7 @@ namespace LastStar {
             if (_manager != null)
             {
                 _manager.Dock();
-                _menus.GoTo(InterfaceMenu.MenuType.Docking);
+                _menus.Push(InterfaceMenu.MenuType.Docking);
             }
         }
 

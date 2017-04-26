@@ -26,7 +26,6 @@ namespace LastStar
 
         public void FocusItem(int index)
         {
-            print(index + " vs " + _tutorial_items.Length);
             if (index >= _tutorial_items.Length) {
                 CloseTutorial();
                 return;

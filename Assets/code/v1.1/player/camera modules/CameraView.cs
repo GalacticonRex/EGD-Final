@@ -5,6 +5,7 @@ using UnityEngine;
 namespace LastStar {
     public abstract class CameraView : MonoBehaviour {
         public float AdjustRate = 0.5f;
+        public float CameraRenderDistance = 1000.0f;
 
         protected CameraSystem _camera_system;
 

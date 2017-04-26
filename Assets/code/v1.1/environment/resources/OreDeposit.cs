@@ -12,6 +12,10 @@ namespace LastStar
         private float _last;
         private float _total;
         private CaptionText _cap;
+        private Player _player;
+        private Camera _camera;
+
+        public CaptionText caption { get { return _cap; } }
 
         public void SetAmount(float amt)
         {
@@ -58,27 +62,6 @@ namespace LastStar
             drone.AddOre(amount);
         }
 
-        public void ManageCaptionText(GameObject caption_text)
-        {
-            _cap = GetComponent<CaptionText>();
-            if (_cap == null && caption_text != null)
-            {
-                GameObject ore_go = Instantiate(caption_text);
-                ore_go.transform.SetParent(transform);
-                ore_go.transform.localPosition = new Vector3();
-
-                _cap = gameObject.AddComponent<CaptionText>();
-                _cap.Source = ore_go;
-
-                print("Created CAPTION TEXT");
-            }
-            if (_cap != null)
-            {
-                _cap.TextData = "Ore Deposit of " + Mathf.RoundToInt(InitialAmount).ToString();
-                _cap.Radius = 4.0f * transform.localScale.x;
-            }
-        }
-
         private void Start()
         {
             Extracting = false;
@@ -86,10 +69,20 @@ namespace LastStar
             _total = InitialAmount;
             _last = _total;
 
-            //ManageCaptionText(null);
+            _player = FindObjectOfType<Player>();
+            _camera = _player.GetComponentInChildren<Camera>();
+
+            _cap = GetComponentInChildren<CaptionText>(true);
+            _cap.Radius = transform.localScale.x * 2.5f;
         }
         private void Update()
         {
+            float dist = Vector3.Distance(transform.position, _camera.transform.position);
+            if (dist < _player.selector.MaxDistance)
+                _cap.gameObject.SetActive(true);
+            else if (_cap.gameObject.activeInHierarchy)
+                _cap.gameObject.SetActive(false);
+
             if (_last != _total)
             {
                 _cap.Text = "Ore Deposit of " + Mathf.RoundToInt(_total).ToString();

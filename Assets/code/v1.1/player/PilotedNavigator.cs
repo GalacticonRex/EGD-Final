@@ -37,12 +37,10 @@ namespace LastStar
         public void Block(object obj)
         {
             _blockers.Add(obj);
-            print("Block " + _blockers.Count);
         }
         public void Unblock(object obj)
         {
             _blockers.Remove(obj);
-            print("Unblock " + _blockers.Count);
         }
 
         private IEnumerator GetTimesPressed()

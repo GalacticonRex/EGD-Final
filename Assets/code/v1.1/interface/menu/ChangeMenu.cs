@@ -10,7 +10,7 @@ namespace LastStar {
 
         public void OpenMenu()
         {
-            MainMenu.GoTo(Target);
+            MainMenu.Push(Target);
         }
 
     }

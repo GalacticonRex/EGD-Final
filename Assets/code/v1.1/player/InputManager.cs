@@ -7,6 +7,8 @@ namespace LastStar
 {
     public class InputManager : MonoBehaviour
     {
+        public Camera Primary;
+
         private bool _hit_ui;
         private GameObject _hit;
         private Vector3 _hit_location;
@@ -51,7 +53,7 @@ namespace LastStar
             {
                 _hit_ui = false;
                 RaycastHit hit;
-                Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray r = Primary.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(r, out hit))
                 {
                     Selectable s = hit.collider.GetComponent<Selectable>();

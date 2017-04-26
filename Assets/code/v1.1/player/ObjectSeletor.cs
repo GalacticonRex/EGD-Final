@@ -56,6 +56,7 @@ namespace LastStar
             {
                 if (!_mngr.ui && _mngr.hit != null)
                 {
+                    print("moo around a bit");
                     _currently_hovered = _mngr.hit.GetComponent<Selectable>();
                     if (Input.GetMouseButtonDown(0))
                     {
