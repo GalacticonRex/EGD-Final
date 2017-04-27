@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LastStar {
     public class BaseResources : MonoBehaviour {
-        static private ulong _last_year_checked = 16182468175968148519;
+        static private float _last_year_checked = 0.0f;
 
         static private List<TechPiece> _tech_stored = new List<TechPiece>();
         static private float _ore_stored = 1000;
@@ -44,8 +44,8 @@ namespace LastStar {
         void Start() {
             _resources = FindObjectOfType<ResourceManager>();
 
-            ulong current_year = _resources.CurrentYear();
-            ulong delta = current_year - _last_year_checked;
+            float current_year = _resources.CurrentYear();
+            float delta = current_year - _last_year_checked;
 
             _energy_stored += _energy_generation * delta;
             _ore_stored += _ore_generation * delta;
