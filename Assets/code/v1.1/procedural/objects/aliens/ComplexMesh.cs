@@ -8,6 +8,7 @@ public class ComplexMesh : MonoBehaviour {
     public ComplexAssetDatabase.Type MeshType = ComplexAssetDatabase.Type.Any;
     public int MaxChildDepth = 0;
     public float MaxWiggle = 0.0f;
+    public bool Activate = false;
 
     public int VertexCount()
     {
@@ -32,10 +33,6 @@ public class ComplexMesh : MonoBehaviour {
     }
 
 	void Awake () {
-        //System.Random r = new System.Random();
-        //ComplexVertex[] verts = GetComponentsInChildren<ComplexVertex>(true);
-        //_vertices = verts.OrderBy(x => r.Next()).ToArray();
-
         _vertices = GetComponentsInChildren<ComplexVertex>(true);
         print(_vertices.Length);
         List<Quaternion> rot = new List<Quaternion>();
@@ -55,7 +52,7 @@ public class ComplexMesh : MonoBehaviour {
     }
     private void Update()
     {
-        if (MaxWiggle <= 0.0f)
+        if (!Activate || MaxWiggle <= 0.0f)
             return;
 
         if ( _wiggle_lerp >= 1.0f )

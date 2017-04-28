@@ -12,7 +12,7 @@ namespace LastStar
 
         void Start()
         {
-            AssetDatabase db = GetComponent<AssetDatabase>();
+            /*AssetDatabase db = GetComponent<AssetDatabase>();
             AssetDatabase.UniverseSegment universe = new AssetDatabase.UniverseSegment(db, StartingCivs, StartingCivs, MaxLength);
             while (universe.NextEra())
             {
@@ -22,7 +22,7 @@ namespace LastStar
                     print(ao.name + " (date: " + ao.date.ToString() + ") ==> " + ao.data);
                     Screen.AddArtifact(new Artifact(ao.name, "Dated to " + ao.date.ToString() + "\r\n...\r\n" + ao.data));
                 }
-            }
+            }*/
         }
     }
 }

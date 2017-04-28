@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace LastStar { 
     public class ArtifactSelector : MonoBehaviour {
+        public float AdjustScale;
+
         private Player _player;
         private Renderer _renderer;
         private NotificationLog _log;
@@ -47,13 +49,15 @@ namespace LastStar {
             ArtifactObject artf = s.GetComponent<ArtifactObject>();
             if (artf == null)
             {
+                print("no artifact");
                 _renderer.enabled = false;
                 _hover = false;
             }
             else
             {
+                print("yes artifact");
                 transform.position = artf.transform.position;
-                transform.localScale = artf.transform.localScale * 5.0f;
+                transform.localScale = artf.transform.localScale * AdjustScale;
                 _renderer.enabled = true;
 
                 if (!artf.Extracting && _hover && Input.GetMouseButtonUp(0))

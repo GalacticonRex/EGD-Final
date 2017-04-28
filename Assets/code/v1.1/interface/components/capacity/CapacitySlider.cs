@@ -56,7 +56,6 @@ public class CapacitySlider : MonoBehaviour {
     }
     private void Update()
     {
-        print(_amounts[0] + " / " + _maximum);
         float running = 0.0f;
         for (int i=0;i<Elements.Length;i++)
         {

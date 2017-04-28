@@ -26,79 +26,79 @@ public class ComplexAssetDatabase : MonoBehaviour {
     private List<GameObject> _arms = new List<GameObject>();
     private List<GameObject> _endpoints = new List<GameObject>();
 
-    public GameObject Create(Type t)
+    public GameObject Create(System.Random r, Type t)
     {
         switch( t )
         {
             case Type.Core:
-                return CreateCore();
+                return CreateCore(r);
             case Type.Arm:
-                return CreateArm();
+                return CreateArm(r);
             case Type.Endpoint:
-                return CreateEndpoint();
+                return CreateEndpoint(r);
             case Type.ArmOrCore:
-                return CreateArmOrCore();
+                return CreateArmOrCore(r);
             case Type.ArmOrEndpoint:
-                return CreateArmOrEndpoint();
+                return CreateArmOrEndpoint(r);
             case Type.CoreOrEndpoint:
-                return CreateCoreOrEndpoint();
+                return CreateCoreOrEndpoint(r);
             case Type.Any:
-                return CreateAny();
+                return CreateAny(r);
             default:
                 return null;
         }
     }
 
-    public GameObject CreateArm()
+    public GameObject CreateArm(System.Random rand)
     {
-        return Instantiate(_arms[Random.Range(0, _arms.Count)]);
+        return Instantiate(_arms[rand.Next(0, _arms.Count)]);
     }
-    public GameObject CreateCore()
+    public GameObject CreateCore(System.Random rand)
     {
-        return Instantiate(_cores[Random.Range(0, _cores.Count)]);
+        return Instantiate(_cores[rand.Next(0, _cores.Count)]);
     }
-    public GameObject CreateEndpoint()
+    public GameObject CreateEndpoint(System.Random rand)
     {
-        return Instantiate(_endpoints[Random.Range(0, _endpoints.Count)]);
+        return Instantiate(_endpoints[rand.Next(0, _endpoints.Count)]);
     }
 
-    public GameObject CreateArmOrEndpoint()
+    public GameObject CreateArmOrEndpoint(System.Random rand)
     {
-        if (Random.value < ArmProbability / (EndpointProbability + ArmProbability))
-            return CreateArm();
-
-        else
-            return CreateEndpoint();
-    }
-    public GameObject CreateArmOrCore()
-    {
-        if (Random.value < ArmProbability / (CoreProbability + ArmProbability))
-            return CreateArm();
+        if ((float)rand.NextDouble() < ArmProbability / (EndpointProbability + ArmProbability))
+            return CreateArm(rand);
 
         else
-            return CreateCore();
+            return CreateEndpoint(rand);
     }
-    public GameObject CreateCoreOrEndpoint()
+    public GameObject CreateArmOrCore(System.Random rand)
     {
-        if (Random.value < CoreProbability / (CoreProbability + EndpointProbability))
-            return CreateCore();
+        if ((float)rand.NextDouble() < ArmProbability / (CoreProbability + ArmProbability))
+            return CreateArm(rand);
 
         else
-            return CreateEndpoint();
+            return CreateCore(rand);
     }
-    public GameObject CreateAny()
+    public GameObject CreateCoreOrEndpoint(System.Random rand)
+    {
+        if ((float)rand.NextDouble() < CoreProbability / (CoreProbability + EndpointProbability))
+            return CreateCore(rand);
+
+        else
+            return CreateEndpoint(rand);
+    }
+    public GameObject CreateAny(System.Random rand)
     {
         float total = CoreProbability + EndpointProbability + ArmProbability;
-        float data = Random.value;
+        float data = (float)rand.NextDouble();
 
         if (data < EndpointProbability / total)
-            return CreateEndpoint();
+            return CreateEndpoint(rand);
 
         else if (data < ArmProbability / total)
-            return CreateArm();
+            return CreateArm(rand);
 
         else
-            return CreateCore();
+            return CreateCore(rand);
     }
 
     private void Awake () {

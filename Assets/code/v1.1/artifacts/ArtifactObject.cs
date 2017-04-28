@@ -26,6 +26,7 @@ namespace LastStar
     }
     public class ArtifactObject : MonoBehaviour
     {
+        public GameObject AliveMarker;
         public string Name;
         public string Source;
         public bool Extracting;
@@ -46,7 +47,7 @@ namespace LastStar
 
         public void PickUp(DroneAI drone)
         {
-            Vector3 dif = drone.transform.position - transform.position;
+            /*Vector3 dif = drone.transform.position - transform.position;
 
             transform.SetParent(drone.transform);
             transform.localPosition = dif;
@@ -58,7 +59,9 @@ namespace LastStar
             foreach (Collider collid in collids)
             {
                 Destroy(collid);
-            }
+            }*/
+
+            drone.AddArtifact(_artf);
 
             // Destroy Caption Text
             CaptionText cap = GetComponent<CaptionText>();
@@ -68,6 +71,9 @@ namespace LastStar
             Canvas canv = GetComponentInChildren<Canvas>();
             if (canv != null)
                 Destroy(canv.gameObject);
+
+            Destroy(AliveMarker);
+            Destroy(this);
         }
 
         private void Start()

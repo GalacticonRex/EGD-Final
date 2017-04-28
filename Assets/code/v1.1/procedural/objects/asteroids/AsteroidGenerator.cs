@@ -5,8 +5,9 @@ using UnityEngine;
 namespace LastStar
 {
     public class AsteroidGenerator : MonoBehaviour { 
-        public GameObject Source;
-        public GameObject SourceWithOre;
+        public GameObject[] Source;
+        public GameObject[] SourceWithOre;
+
         public float TargetDensity = 0.2f;
 
         public float MinDensity;
@@ -56,7 +57,7 @@ namespace LastStar
             GameObject go;
             if ((float)_random.NextDouble() < OreProbability[index] / 100.0f)
             {
-                go = Instantiate(SourceWithOre);
+                go = Instantiate(SourceWithOre[_random.Next(0, SourceWithOre.Length)]);
                 go.GetComponent<AsteroidObject>().RandomGenerator = _random;
 
                 OreDeposit ore = go.GetComponent<OreDeposit>();
@@ -65,7 +66,7 @@ namespace LastStar
             }
             else
             {
-                go = Instantiate(Source);
+                go = Instantiate(Source[_random.Next(0, Source.Length)]);
                 go.GetComponent<AsteroidObject>().RandomGenerator = _random;
             }
 

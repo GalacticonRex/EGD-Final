@@ -85,16 +85,19 @@ namespace LastStar
         public class UniverseSegment
         {
             private AssetDatabase _parent;
-            private List<ActorWeb> _historical;
             private ActorWeb _current;
-            private Translator _translator;
-            private CivEvent _last_event;
+            private List<ActorWeb> _historical;
+            private List<Translator> _translators;
+            private List<CivEvent> _event_list;
             private int _target_number_of_actors;
             private int _target_universe_age;
             private ulong _years_ago;
 
             public UniverseSegment(AssetDatabase par, int initial_actors, int num_actors, int age_seg)
             {
+                _event_list = new List<CivEvent>();
+                _translators = new List<Translator>();
+
                 _parent = par;
                 _target_number_of_actors = num_actors;
                 _target_universe_age = age_seg;
@@ -121,7 +124,7 @@ namespace LastStar
                 ActorWeb new_web = _current.CreateNewEra();
                 _parent.RandomizeEvents();
 
-                _last_event = null;
+                CivEvent _last_event = null;
                 Actor[][] possible = null;
 
                 while (possible == null)
@@ -132,6 +135,8 @@ namespace LastStar
                     possible = _last_event.FitToWeb(new_web);
                 }
 
+                _event_list.Add(_last_event);
+
                 if ( possible != null )
                 {
                     print(_last_event.Name + ", " + _last_event.Description);
@@ -139,12 +144,12 @@ namespace LastStar
                     Actor[] result = possible[index];
                     _last_event.ApplyChanges(new_web, result);
 
-                    _translator = new Translator(_parent);
+                    Translator _translator = new Translator(_parent);
                     for( int i=0;i<result.Length;i++ )
                     {
                         _translator.pnoun(i, result[i].Name);
                     }
-
+                    _translators.Add(_translator);
                     _historical.Add(_current);
                     _current = new_web;
 
@@ -156,9 +161,13 @@ namespace LastStar
                     return false;
                 }
             }
-            public ArtifactOutput CreateArtifact()
+            public int EraCount()
             {
-                return _parent.CreateArtifact(_years_ago, _last_event, _translator);
+                return _historical.Count;
+            }
+            public ArtifactOutput CreateArtifact(int era)
+            {
+                return _parent.CreateArtifact(_years_ago, _event_list[era], _translators[era]);
             }
         }
         public class Actor

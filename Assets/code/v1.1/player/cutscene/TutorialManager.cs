@@ -84,7 +84,8 @@ namespace LastStar
         }
         public void OpenTutorial()
         {
-            FocusItem(_current_index);
+            if ( !Stargun.StargunIsReady() )
+                FocusItem(_current_index);
         }
 
         private void Start()

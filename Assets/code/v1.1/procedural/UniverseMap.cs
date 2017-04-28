@@ -12,7 +12,7 @@ namespace LastStar
 
         public static int GetSeed()
         {
-            return LocationX ^ LocationY ^ LocationZ;
+            return (LocationX << 17) ^ (LocationX >> 15) ^ (LocationY << 12) ^ (LocationY << 20) ^ (LocationZ << 24) ^ (LocationZ >> 8);
         }
         public static void ReturnHome()
         {

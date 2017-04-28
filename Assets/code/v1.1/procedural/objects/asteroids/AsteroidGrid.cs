@@ -46,7 +46,12 @@ namespace LastStar {
         private float _player_radius;
         private int[] _location;
         private int[] _dimensions;
+        private AssetDatabase.UniverseSegment _universe;
 
+        public AssetDatabase.ArtifactOutput GetRandomArtifact(System.Random rand)
+        {
+            return _universe.CreateArtifact(rand.Next(0, _universe.EraCount()));
+        }
         public float GetRandomValue()
         {
             return (float)_random.NextDouble();
@@ -136,6 +141,10 @@ namespace LastStar {
         private void Start()
         {
             _center = FindObjectOfType<Player>();
+
+            AssetDatabase db = FindObjectOfType<AssetDatabase>();
+            _universe = new AssetDatabase.UniverseSegment(db, 4, 4, 30);
+            while (_universe.NextEra()) ;
 
             Camera cam = _center.cameraSystem.PlayerCamera;
             _player_radius = cam.farClipPlane;
