@@ -100,6 +100,10 @@ namespace LastStar
                 Energy.Remove(0, amount);
                 _energy_stored -= amount;
             }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("lose");
+            }
             return good;
         }
         public bool RequestStorage(float amount)

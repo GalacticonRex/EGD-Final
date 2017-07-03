@@ -8,6 +8,8 @@ namespace LastStar
     {
         public int DockedDrones;
         public GameObject DronePrefab;
+        public AudioSource Launch;
+        public AudioSource Return;
 
         private int _max_drones;
 
@@ -45,6 +47,7 @@ namespace LastStar
         }
         public void ReturnToShip(DroneAI drone)
         {
+            Return.Play();
             float o = drone.GetOre();
             TechPiece t = drone.GetTech();
             Artifact a = drone.GetArtifact();
@@ -84,6 +87,7 @@ namespace LastStar
             if ( _tasks.Count > 0 && DockedDrones > 0 )
             {
                 GameObject go = Instantiate(DronePrefab);
+                Launch.Play();
                 go.transform.position = transform.position;
 
                 DroneAI ai = go.GetComponent<DroneAI>();
